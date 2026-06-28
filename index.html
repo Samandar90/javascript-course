@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript с нуля / noldan — интерактивный курс</title>
+<style>
+  :root{
+    --bg:#0d1117; --bg2:#161b22; --bg3:#1c2330;
+    --line:#2b3340; --text:#e6edf3; --muted:#9aa7b4;
+    --accent:#f7df1e; --accent2:#58a6ff; --green:#3fb950; --red:#f85149;
+    --code:#0b0f14; --shadow:0 10px 40px rgba(0,0,0,.45);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.7;
+    display:flex; min-height:100vh;
+  }
+  a{color:var(--accent2);text-decoration:none}
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{
+    width:300px; background:var(--bg2); border-right:1px solid var(--line);
+    height:100vh; position:sticky; top:0; overflow-y:auto; flex-shrink:0;
+    padding:0 0 40px;
+  }
+  .brand{
+    padding:22px 22px 16px; position:sticky; top:0; background:var(--bg2);
+    border-bottom:1px solid var(--line); z-index:5;
+  }
+  .brand .logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:18px}
+  .brand .badge{background:var(--accent);color:#000;font-weight:900;border-radius:8px;
+    width:38px;height:38px;display:grid;place-items:center;font-size:16px}
+  .brand p{color:var(--muted);font-size:12.5px;margin-top:8px}
+
+  .lang{display:flex;gap:6px;margin-top:14px;background:var(--bg3);padding:4px;border-radius:10px}
+  .lang button{flex:1;background:transparent;border:none;color:var(--muted);padding:8px;
+    border-radius:8px;cursor:pointer;font-weight:700;font-size:13px;transition:.15s}
+  .lang button.active{background:var(--accent);color:#000}
+
+  .progress-wrap{margin-top:14px}
+  .progress-bar{height:7px;background:var(--bg3);border-radius:99px;overflow:hidden}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--accent));transition:width .4s}
+  .progress-text{font-size:11.5px;color:var(--muted);margin-top:6px}
+
+  .nav{padding:10px 12px}
+  .nav-group{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:16px 12px 6px;font-weight:700}
+  .nav a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;
+    color:var(--text);font-size:14px;cursor:pointer;transition:.15s}
+  .nav a:hover{background:var(--bg3)}
+  .nav a.active{background:var(--accent);color:#000;font-weight:700}
+  .nav a .num{font-size:12px;opacity:.7;width:22px}
+  .nav a.done::after{content:"✓";margin-left:auto;color:var(--green);font-weight:900}
+  .nav a.active.done::after{color:#000}
+
+  /* ---------- MAIN ---------- */
+  .main{flex:1;min-width:0}
+  .topbar{display:none;align-items:center;gap:12px;padding:12px 16px;
+    background:var(--bg2);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+  .menu-btn{background:var(--bg3);border:1px solid var(--line);color:var(--text);
+    border-radius:10px;padding:8px 12px;font-size:18px;cursor:pointer}
+  .content{max-width:920px;margin:0 auto;padding:46px 28px 120px}
+
+  .lesson{display:none;animation:fade .35s ease}
+  .lesson.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .kicker{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.05em;text-transform:uppercase}
+  h1{font-size:38px;line-height:1.2;margin:8px 0 18px;font-weight:800}
+  h2{font-size:25px;margin:38px 0 14px;font-weight:800;border-left:4px solid var(--accent);padding-left:14px}
+  h3{font-size:19px;margin:26px 0 10px;font-weight:700;color:#fff}
+  p{margin:12px 0;color:#d2dae3}
+  ul,ol{margin:12px 0 12px 24px}
+  li{margin:7px 0;color:#d2dae3}
+  strong{color:#fff}
+  .lead{font-size:18px;color:var(--muted)}
+
+  .note,.tip,.warn{border-radius:12px;padding:14px 18px;margin:18px 0;border-left:4px solid;background:var(--bg2)}
+  .note{border-color:var(--accent2)}
+  .tip{border-color:var(--green)}
+  .warn{border-color:var(--red)}
+  .note b,.tip b,.warn b{display:block;margin-bottom:4px}
+
+  code.inline{background:var(--bg3);padding:2px 7px;border-radius:6px;font-family:"Consolas",monospace;font-size:14px;color:var(--accent)}
+
+  pre{background:var(--code);border:1px solid var(--line);border-radius:12px;
+    padding:16px 18px;overflow-x:auto;margin:16px 0;font-size:14.5px;
+    font-family:"Consolas","Courier New",monospace;line-height:1.6}
+  .tok-key{color:#ff7b72}.tok-str{color:#a5d6ff}.tok-num{color:#79c0ff}
+  .tok-com{color:#8b949e;font-style:italic}.tok-fn{color:#d2a8ff}.tok-bool{color:#79c0ff}
+
+  .play{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:22px 0;box-shadow:var(--shadow)}
+  .play-head{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--bg3);border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .dot.r{background:#ff5f56}.dot.y{background:#ffbd2e}.dot.g{background:#27c93f}
+  .play-head .title{margin-left:8px;font-weight:600}
+  .play-head .run{margin-left:auto;background:var(--green);color:#fff;border:none;
+    padding:7px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px}
+  .play-head .run:hover{filter:brightness(1.1)}
+  .play-head .reset{background:transparent;border:1px solid var(--line);color:var(--muted);
+    padding:7px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+  .editor{width:100%;background:var(--code);color:#e6edf3;border:none;outline:none;
+    font-family:"Consolas","Courier New",monospace;font-size:14.5px;line-height:1.6;
+    padding:16px 18px;resize:vertical;min-height:120px;display:block;tab-size:2;white-space:pre}
+  .console{background:#06090d;border-top:1px solid var(--line);padding:14px 18px;
+    font-family:"Consolas",monospace;font-size:14px;min-height:48px;color:#c9d1d9}
+  .console .clabel{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+  .console .line{white-space:pre-wrap;padding:2px 0;border-bottom:1px dashed #131a22}
+  .console .err{color:var(--red)}
+  .console .empty{color:#4d5b6a;font-style:italic}
+
+  .quiz{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:22px;margin:24px 0}
+  .quiz h3{margin-top:0}
+  .q{margin:18px 0}
+  .q .qtext{font-weight:600;margin-bottom:10px}
+  .opt{display:block;padding:11px 14px;border:1px solid var(--line);border-radius:10px;
+    margin:8px 0;cursor:pointer;transition:.15s;background:var(--bg3)}
+  .opt:hover{border-color:var(--accent2)}
+  .opt.correct{border-color:var(--green);background:rgba(63,185,80,.15)}
+  .opt.wrong{border-color:var(--red);background:rgba(248,81,73,.12)}
+  .opt input{margin-right:10px}
+  .quiz-btn{background:var(--accent);color:#000;border:none;padding:11px 22px;border-radius:10px;
+    font-weight:800;cursor:pointer;margin-top:8px;font-size:14px}
+  .quiz-result{margin-top:14px;font-weight:700;display:none}
+
+  .pager{display:flex;justify-content:space-between;gap:14px;margin-top:60px;border-top:1px solid var(--line);padding-top:26px}
+  .pager button{flex:1;background:var(--bg2);border:1px solid var(--line);color:var(--text);
+    padding:16px 20px;border-radius:14px;cursor:pointer;text-align:left;transition:.15s}
+  .pager button:hover:not(:disabled){border-color:var(--accent);background:var(--bg3)}
+  .pager button:disabled{opacity:.35;cursor:not-allowed}
+  .pager .dir{font-size:12px;color:var(--muted)}
+  .pager .ttl{font-weight:700;margin-top:3px}
+  .pager .next{text-align:right}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:18px 0}
+  .card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card .ico{font-size:26px}
+  .card h4{margin:10px 0 6px;font-size:16px}
+  .card p{font-size:14px;color:var(--muted);margin:0}
+
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+  .compare .bad,.compare .good{border-radius:12px;padding:14px;border:1px solid}
+  .compare .bad{border-color:rgba(248,81,73,.4);background:rgba(248,81,73,.06)}
+  .compare .good{border-color:rgba(63,185,80,.4);background:rgba(63,185,80,.06)}
+  .compare h5{margin-bottom:8px;font-size:13px}
+  .compare .bad h5{color:var(--red)}.compare .good h5{color:var(--green)}
+
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left}
+  th{background:var(--bg3);font-weight:700}
+  td code{color:var(--accent)}
+
+  .scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:15}
+
+  @media(max-width:880px){
+    .sidebar{position:fixed;left:0;top:0;z-index:30;transform:translateX(-100%);transition:.25s}
+    .sidebar.open{transform:none}
+    .topbar{display:flex}
+    .scrim.show{display:block}
+    .compare{grid-template-columns:1fr}
+    h1{font-size:30px}
+    .content{padding:28px 18px 100px}
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="logo"><span class="badge">JS</span><span id="brandTitle">JavaScript с нуля</span></div>
+    <p id="brandSub">Полный интерактивный курс. Пиши код прямо в браузере.</p>
+    <div class="lang">
+      <button data-lang="ru" class="active">🇷🇺 Русский</button>
+      <button data-lang="uz">🇺🇿 O‘zbek</button>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+      <div class="progress-text" id="progText"></div>
+    </div>
+  </div>
+  <nav class="nav" id="nav"></nav>
+</aside>
+<div class="scrim" id="scrim"></div>
+
+<div class="main">
+  <div class="topbar">
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <strong id="topTitle">JavaScript</strong>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+
+<script>
+const K=`<span class="tok-key">`, S=`<span class="tok-str">`, N=`<span class="tok-num">`,
+      C=`<span class="tok-com">`, F=`<span class="tok-fn">`, _=`</span>`;
+
+function escapeHtml(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function escapeAttr(s){return s.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+/* Подписи интерфейса по языкам */
+const UI = {
+  ru:{ brand:"JavaScript с нуля", sub:"Полный интерактивный курс. Пиши код прямо в браузере.",
+       run:"▶ Запустить", reset:"Сброс", play:"Песочница — нажми «Запустить»",
+       consoleLbl:"Консоль", empty:"Здесь появится результат…",
+       runOk:"Код выполнен. (Нет вывода — добавь console.log, чтобы что-то увидеть)",
+       err:"❌ Ошибка: ", check:"Проверить ответы", prog:(n,t)=>`Пройдено ${n} из ${t}`,
+       back:"← Назад", next:"Далее →", finish:"Курс пройден 🎉",
+       perfect:(c,a)=>`🎉 Отлично! ${c} из ${a} верно!`,
+       partial:(c,a)=>`Правильно ${c} из ${a}. Зелёным отмечены верные ответы — попробуй ещё!` },
+  uz:{ brand:"JavaScript noldan", sub:"To‘liq interaktiv kurs. Kodni to‘g‘ridan-to‘g‘ri brauzerda yoz.",
+       run:"▶ Ishga tushir", reset:"Tozalash", play:"Sinov maydoni — «Ishga tushir» bos",
+       consoleLbl:"Konsol", empty:"Natija shu yerda chiqadi…",
+       runOk:"Kod bajarildi. (Natija yo‘q — biror narsa ko‘rish uchun console.log qo‘sh)",
+       err:"❌ Xato: ", check:"Javoblarni tekshir", prog:(n,t)=>`${t} dan ${n} tasi o‘tildi`,
+       back:"← Orqaga", next:"Keyingi →", finish:"Kurs tugadi 🎉",
+       perfect:(c,a)=>`🎉 Zo‘r! ${a} dan ${c} tasi to‘g‘ri!`,
+       partial:(c,a)=>`${a} dan ${c} tasi to‘g‘ri. Yashil rang to‘g‘ri javob — yana urinib ko‘r!` }
+};
+
+let lang = localStorage.getItem('jsCourseLang') || 'ru';
+
+function play(code){
+  const t = UI[lang];
+  return `<div class="play">
+    <div class="play-head">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="title">${t.play}</span>
+      <button class="reset" data-reset>${t.reset}</button>
+      <button class="run" data-run>${t.run}</button>
+    </div>
+    <textarea class="editor" spellcheck="false" data-init="${escapeAttr(code)}">${escapeHtml(code)}</textarea>
+    <div class="console"><div class="clabel">${t.consoleLbl}</div><div class="cout"><span class="empty">${t.empty}</span></div></div>
+  </div>`;
+}
+
+/* ============================================================
+   УРОКИ — двуязычные. title/group/html имеют {ru, uz}.
+   html — функция, чтобы плейграунды строились на текущем языке.
+   ============================================================ */
+const LESSONS = [
+
+/* ---------- 1. ВВЕДЕНИЕ ---------- */
+{
+id:"intro",
+group:{ru:"Начало",uz:"Boshlash"},
+title:{ru:"Что такое JavaScript",uz:"JavaScript nima"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 1</div>
+<h1>Что такое JavaScript?</h1>
+<p class="lead">JavaScript (или просто <b>JS</b>) — это язык программирования, который <b>оживляет</b> сайты. Без него страницы были бы просто картинками с текстом.</p>
+<h2>Три кита веб-сайта</h2>
+<p>Любой сайт держится на трёх технологиях. Представь, что строишь человека:</p>
+<div class="grid">
+  <div class="card"><div class="ico">🦴</div><h4>HTML</h4><p>Скелет. Структура страницы: заголовки, кнопки, картинки.</p></div>
+  <div class="card"><div class="ico">👕</div><h4>CSS</h4><p>Одежда и внешность. Цвета, шрифты, расположение.</p></div>
+  <div class="card"><div class="ico">🧠</div><h4>JavaScript</h4><p>Мозг и движения. Реакция на клики, вычисления, изменения на лету.</p></div>
+</div>
+<h2>Что умеет JavaScript?</h2>
+<ul>
+  <li>Реагировать на действия пользователя (клик, ввод текста, наведение мыши)</li>
+  <li>Менять содержимое страницы без перезагрузки</li>
+  <li>Делать вычисления (калькуляторы, корзины товаров)</li>
+  <li>Показывать всплывающие окна, анимации, слайдеры</li>
+  <li>Загружать данные с сервера (новости, погода, сообщения)</li>
+</ul>
+<div class="note"><b>💡 Важно</b>JavaScript работает прямо в браузере (Chrome, Firefox, Edge). Ничего устанавливать не нужно — браузер уже умеет его выполнять.</div>
+<h2>Твой первый код</h2>
+<p>Команда <code class="inline">console.log()</code> выводит сообщение в «консоль». Нажми <b>▶ Запустить</b>:</p>
+${play(`console.log("Привет, мир!");\nconsole.log("Я учу JavaScript 🚀");`)}
+<p>Поздравляю — ты выполнил настоящую программу! Поменяй текст в кавычках и запусти снова.</p>
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="2"><div class="qtext">1. За что отвечает JavaScript на сайте?</div>
+    <label class="opt"><input type="radio" name="q1"> За цвета и шрифты</label>
+    <label class="opt"><input type="radio" name="q1"> За структуру страницы</label>
+    <label class="opt"><input type="radio" name="q1"> За поведение и интерактивность («мозг»)</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Что делает <code class="inline">console.log()</code>?</div>
+    <label class="opt"><input type="radio" name="q2"> Удаляет сайт</label>
+    <label class="opt"><input type="radio" name="q2"> Выводит сообщение в консоль</label>
+    <label class="opt"><input type="radio" name="q2"> Меняет цвет фона</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">1-dars</div>
+<h1>JavaScript nima?</h1>
+<p class="lead">JavaScript (qisqacha <b>JS</b>) — saytlarni <b>jonlantiradigan</b> dasturlash tili. Usiz sahifalar shunchaki matnli rasmlar bo‘lib qolardi.</p>
+<h2>Veb-saytning uchta asosi</h2>
+<p>Har qanday sayt uchta texnologiyaga tayanadi. Xuddi odam yaratayotgandek tasavvur qil:</p>
+<div class="grid">
+  <div class="card"><div class="ico">🦴</div><h4>HTML</h4><p>Skelet. Sahifa tuzilishi: sarlavhalar, tugmalar, rasmlar.</p></div>
+  <div class="card"><div class="ico">👕</div><h4>CSS</h4><p>Kiyim va tashqi ko‘rinish. Ranglar, shriftlar, joylashuv.</p></div>
+  <div class="card"><div class="ico">🧠</div><h4>JavaScript</h4><p>Miya va harakat. Bosishga javob, hisob-kitob, jonli o‘zgarishlar.</p></div>
+</div>
+<h2>JavaScript nimalarni qila oladi?</h2>
+<ul>
+  <li>Foydalanuvchi harakatlariga javob beradi (bosish, matn kiritish, sichqoncha)</li>
+  <li>Sahifa mazmunini qayta yuklamasdan o‘zgartiradi</li>
+  <li>Hisob-kitob qiladi (kalkulyator, savatcha)</li>
+  <li>Oynalar, animatsiyalar, slayderlar ko‘rsatadi</li>
+  <li>Serverdan ma’lumot yuklaydi (yangiliklar, ob-havo, xabarlar)</li>
+</ul>
+<div class="note"><b>💡 Muhim</b>JavaScript to‘g‘ridan-to‘g‘ri brauzerda (Chrome, Firefox, Edge) ishlaydi. Hech narsa o‘rnatish shart emas.</div>
+<h2>Sening birinchi koding</h2>
+<p><code class="inline">console.log()</code> buyrug‘i «konsol»ga xabar chiqaradi. <b>▶ Ishga tushir</b> ni bos:</p>
+${play(`console.log("Salom, dunyo!");\nconsole.log("Men JavaScript o‘rganyapman 🚀");`)}
+<p>Tabriklayman — sen haqiqiy dastur ishga tushirding! Qo‘shtirnoq ichidagi matnni o‘zgartirib qaytadan bos.</p>
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="2"><div class="qtext">1. Saytda JavaScript nimaga javob beradi?</div>
+    <label class="opt"><input type="radio" name="q1"> Rang va shriftlarga</label>
+    <label class="opt"><input type="radio" name="q1"> Sahifa tuzilishiga</label>
+    <label class="opt"><input type="radio" name="q1"> Xulq va interaktivlikka («miya»)</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. <code class="inline">console.log()</code> nima qiladi?</div>
+    <label class="opt"><input type="radio" name="q2"> Saytni o‘chiradi</label>
+    <label class="opt"><input type="radio" name="q2"> Konsolga xabar chiqaradi</label>
+    <label class="opt"><input type="radio" name="q2"> Fon rangini o‘zgartiradi</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 2. ПОДКЛЮЧЕНИЕ ---------- */
+{
+id:"setup",
+group:{ru:"Начало",uz:"Boshlash"},
+title:{ru:"Как запустить JS",uz:"JS ni qanday ishga tushirish"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 2</div>
+<h1>Как подключить и запустить JavaScript</h1>
+<p class="lead">Есть 3 способа выполнить JavaScript.</p>
+<h2>Способ 1 — Консоль браузера</h2>
+<ol><li>Открой любой сайт в Chrome</li><li>Нажми <code class="inline">F12</code></li><li>Вкладка <b>Console</b></li><li>Напиши код и нажми Enter</li></ol>
+<div class="tip"><b>Попробуй</b>Открой консоль (F12) и набери <code class="inline">2 + 2</code> — браузер ответит <b>4</b>.</div>
+<h2>Способ 2 — Тег &lt;script&gt; в HTML</h2>
+<pre>${K}&lt;!DOCTYPE html&gt;${_}
+&lt;body&gt;
+  &lt;h1&gt;Мой сайт&lt;/h1&gt;
+  &lt;script&gt;
+    ${F}alert${_}(${S}"Привет с моего сайта!"${_});
+  &lt;/script&gt;
+&lt;/body&gt;</pre>
+<h2>Способ 3 — Отдельный файл .js</h2>
+<pre>&lt;script src=${S}"script.js"${_}&gt;&lt;/script&gt;</pre>
+<div class="note"><b>💡 Зачем отдельный файл?</b>Код не мешается с HTML, его удобно читать и переиспользовать.</div>
+<h2>3 команды вывода</h2>
+<table><tr><th>Команда</th><th>Что делает</th><th>Где видно</th></tr>
+<tr><td><code>console.log()</code></td><td>Печатает сообщение</td><td>В консоли (F12)</td></tr>
+<tr><td><code>alert()</code></td><td>Всплывающее окно</td><td>Поверх страницы</td></tr>
+<tr><td><code>document.write()</code></td><td>Пишет на странице</td><td>На самой странице</td></tr></table>
+${play(`console.log("Строка 1");\nconsole.log("Строка 2");\nconsole.log("Сумма 2 + 3 =", 2 + 3);`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Какой тег для JS в HTML?</div>
+    <label class="opt"><input type="radio" name="q1"> &lt;js&gt;</label>
+    <label class="opt"><input type="radio" name="q1"> &lt;script&gt;</label>
+    <label class="opt"><input type="radio" name="q1"> &lt;code&gt;</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Какая клавиша открывает консоль?</div>
+    <label class="opt"><input type="radio" name="q2"> F12</label>
+    <label class="opt"><input type="radio" name="q2"> Esc</label>
+    <label class="opt"><input type="radio" name="q2"> Tab</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">2-dars</div>
+<h1>JavaScript ni qanday ulash va ishga tushirish</h1>
+<p class="lead">JavaScript ni bajarishning 3 ta usuli bor.</p>
+<h2>1-usul — Brauzer konsoli</h2>
+<ol><li>Chrome da istalgan saytni och</li><li><code class="inline">F12</code> ni bos</li><li><b>Console</b> bo‘limiga o‘t</li><li>Kod yoz va Enter bos</li></ol>
+<div class="tip"><b>Sinab ko‘r</b>Konsolni och (F12) va <code class="inline">2 + 2</code> deb yoz — brauzer <b>4</b> deb javob beradi.</div>
+<h2>2-usul — HTML ichida &lt;script&gt; tegi</h2>
+<pre>${K}&lt;!DOCTYPE html&gt;${_}
+&lt;body&gt;
+  &lt;h1&gt;Mening saytim&lt;/h1&gt;
+  &lt;script&gt;
+    ${F}alert${_}(${S}"Saytimdan salom!"${_});
+  &lt;/script&gt;
+&lt;/body&gt;</pre>
+<h2>3-usul — Alohida .js fayl</h2>
+<pre>&lt;script src=${S}"script.js"${_}&gt;&lt;/script&gt;</pre>
+<div class="note"><b>💡 Nega alohida fayl?</b>Kod HTML bilan aralashmaydi, o‘qish va qayta ishlatish oson.</div>
+<h2>3 ta chiqarish buyrug‘i</h2>
+<table><tr><th>Buyruq</th><th>Vazifasi</th><th>Qayerda</th></tr>
+<tr><td><code>console.log()</code></td><td>Xabar chiqaradi</td><td>Konsolda (F12)</td></tr>
+<tr><td><code>alert()</code></td><td>Oyna chiqaradi</td><td>Sahifa ustida</td></tr>
+<tr><td><code>document.write()</code></td><td>Sahifaga yozadi</td><td>Sahifaning o‘zida</td></tr></table>
+${play(`console.log("1-qator");\nconsole.log("2-qator");\nconsole.log("Yig‘indi 2 + 3 =", 2 + 3);`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. HTML da JS uchun qaysi teg?</div>
+    <label class="opt"><input type="radio" name="q1"> &lt;js&gt;</label>
+    <label class="opt"><input type="radio" name="q1"> &lt;script&gt;</label>
+    <label class="opt"><input type="radio" name="q1"> &lt;code&gt;</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Konsolni qaysi tugma ochadi?</div>
+    <label class="opt"><input type="radio" name="q2"> F12</label>
+    <label class="opt"><input type="radio" name="q2"> Esc</label>
+    <label class="opt"><input type="radio" name="q2"> Tab</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 3. ПЕРЕМЕННЫЕ ---------- */
+{
+id:"variables",
+group:{ru:"Основы",uz:"Asoslar"},
+title:{ru:"Переменные",uz:"O‘zgaruvchilar"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 3</div>
+<h1>Переменные — коробки для данных</h1>
+<p class="lead">Переменная — это <b>коробка с названием</b>, в которую кладём данные, чтобы использовать их позже.</p>
+<h2>Создаём переменную</h2>
+<pre>${K}let${_} name = ${S}"Самандар"${_};
+${K}let${_} age = ${N}25${_};</pre>
+<p>Разберём <code class="inline">let name = "Самандар";</code>:</p>
+<ul><li><code class="inline">let</code> — «создаю переменную»</li><li><code class="inline">name</code> — название коробки</li><li><code class="inline">=</code> — кладём значение</li><li><code class="inline">"Самандар"</code> — значение</li><li><code class="inline">;</code> — конец команды</li></ul>
+<h2>let, const и var</h2>
+<table><tr><th>Слово</th><th>Можно менять?</th><th>Когда</th></tr>
+<tr><td><code>let</code></td><td>✅ Да</td><td>значение будет меняться</td></tr>
+<tr><td><code>const</code></td><td>❌ Нет</td><td>значение постоянное (выбирай по умолчанию)</td></tr>
+<tr><td><code>var</code></td><td>✅ Да</td><td>старый способ, почти не используют</td></tr></table>
+<div class="tip"><b>Правило профи</b>Начинай с <code class="inline">const</code>. Если нужно менять — поменяй на <code class="inline">let</code>.</div>
+<h2>Меняем значение</h2>
+${play(`let score = 0;\nconsole.log("Начало:", score);\nscore = 10;\nconsole.log("После гола:", score);\nscore = score + 5;\nconsole.log("Ещё +5:", score);`)}
+<h2>Правила названий</h2>
+<div class="compare">
+<div class="bad"><h5>✗ Нельзя</h5><pre>${K}let${_} 1name;
+${K}let${_} my name;
+${K}let${_} class;</pre></div>
+<div class="good"><h5>✓ Правильно</h5><pre>${K}let${_} firstName;
+${K}let${_} userAge;
+${K}let${_} totalPrice;</pre></div></div>
+<p>Имена пишут в стиле <b>camelCase</b>: <code class="inline">myFirstName</code>.</p>
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Что выбрать для постоянного значения?</div>
+    <label class="opt"><input type="radio" name="q1"> let</label>
+    <label class="opt"><input type="radio" name="q1"> const</label>
+    <label class="opt"><input type="radio" name="q1"> var</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">2. Правильное имя переменной?</div>
+    <label class="opt"><input type="radio" name="q2"> 2price</label>
+    <label class="opt"><input type="radio" name="q2"> user name</label>
+    <label class="opt"><input type="radio" name="q2"> userName</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">3-dars</div>
+<h1>O‘zgaruvchilar — ma’lumot uchun quti</h1>
+<p class="lead">O‘zgaruvchi — bu <b>nomi bor quti</b>, unga ma’lumot solamiz va keyin ishlatamiz.</p>
+<h2>O‘zgaruvchi yaratamiz</h2>
+<pre>${K}let${_} name = ${S}"Samandar"${_};
+${K}let${_} age = ${N}25${_};</pre>
+<p><code class="inline">let name = "Samandar";</code> ni ko‘rib chiqamiz:</p>
+<ul><li><code class="inline">let</code> — «o‘zgaruvchi yarataman»</li><li><code class="inline">name</code> — quti nomi</li><li><code class="inline">=</code> — qiymat solamiz</li><li><code class="inline">"Samandar"</code> — qiymat</li><li><code class="inline">;</code> — buyruq oxiri</li></ul>
+<h2>let, const va var</h2>
+<table><tr><th>So‘z</th><th>O‘zgartirsa bo‘ladimi?</th><th>Qachon</th></tr>
+<tr><td><code>let</code></td><td>✅ Ha</td><td>qiymat o‘zgaradi</td></tr>
+<tr><td><code>const</code></td><td>❌ Yo‘q</td><td>qiymat doimiy (asosiy tanlov)</td></tr>
+<tr><td><code>var</code></td><td>✅ Ha</td><td>eski usul, deyarli ishlatilmaydi</td></tr></table>
+<div class="tip"><b>Pro qoidasi</b><code class="inline">const</code> dan boshla. O‘zgartirish kerak bo‘lsa — <code class="inline">let</code> ga almashtir.</div>
+<h2>Qiymatni o‘zgartiramiz</h2>
+${play(`let score = 0;\nconsole.log("Boshi:", score);\nscore = 10;\nconsole.log("Goldan keyin:", score);\nscore = score + 5;\nconsole.log("Yana +5:", score);`)}
+<h2>Nom qoidalari</h2>
+<div class="compare">
+<div class="bad"><h5>✗ Mumkin emas</h5><pre>${K}let${_} 1name;
+${K}let${_} my name;
+${K}let${_} class;</pre></div>
+<div class="good"><h5>✓ To‘g‘ri</h5><pre>${K}let${_} firstName;
+${K}let${_} userAge;
+${K}let${_} totalPrice;</pre></div></div>
+<p>Nomlar <b>camelCase</b> uslubida: <code class="inline">myFirstName</code>.</p>
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Doimiy qiymat uchun nima tanlanadi?</div>
+    <label class="opt"><input type="radio" name="q1"> let</label>
+    <label class="opt"><input type="radio" name="q1"> const</label>
+    <label class="opt"><input type="radio" name="q1"> var</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">2. To‘g‘ri o‘zgaruvchi nomi?</div>
+    <label class="opt"><input type="radio" name="q2"> 2price</label>
+    <label class="opt"><input type="radio" name="q2"> user name</label>
+    <label class="opt"><input type="radio" name="q2"> userName</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 4. ТИПЫ ---------- */
+{
+id:"types",
+group:{ru:"Основы",uz:"Asoslar"},
+title:{ru:"Типы данных",uz:"Ma’lumot turlari"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 4</div>
+<h1>Типы данных</h1>
+<p class="lead">Данные бывают разными: текст, числа, «да/нет».</p>
+<div class="grid">
+  <div class="card"><div class="ico">📝</div><h4>String</h4><p>Текст в кавычках: <code class="inline">"Привет"</code></p></div>
+  <div class="card"><div class="ico">🔢</div><h4>Number</h4><p>Числа: <code class="inline">42</code>, <code class="inline">3.14</code></p></div>
+  <div class="card"><div class="ico">✅</div><h4>Boolean</h4><p><code class="inline">true</code> или <code class="inline">false</code></p></div>
+  <div class="card"><div class="ico">❓</div><h4>Undefined</h4><p>«Пусто» — значения ещё нет</p></div>
+</div>
+<h2>Как узнать тип? typeof</h2>
+${play(`console.log(typeof "Привет");   // string\nconsole.log(typeof 42);          // number\nconsole.log(typeof true);        // boolean\nconsole.log(typeof undefined);   // undefined`)}
+<div class="warn"><b>⚠ Ошибка</b>Число в кавычках — это <b>строка</b>! <code class="inline">"5" + "5"</code> = <code class="inline">"55"</code>, а <code class="inline">5 + 5</code> = <code class="inline">10</code>.</div>
+${play(`let x = "5" + "5";\nlet y = 5 + 5;\nconsole.log("Строки:", x);\nconsole.log("Числа:", y);`)}
+<h2>Преобразование</h2>
+${play(`let text = "10";\nlet num = Number(text);\nconsole.log(num + 5);   // 15, а не "105"`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Тип значения <code class="inline">true</code>?</div>
+    <label class="opt"><input type="radio" name="q1"> string</label>
+    <label class="opt"><input type="radio" name="q1"> boolean</label>
+    <label class="opt"><input type="radio" name="q1"> number</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">2. Чему равно <code class="inline">"3" + "4"</code>?</div>
+    <label class="opt"><input type="radio" name="q2"> 7</label>
+    <label class="opt"><input type="radio" name="q2"> 12</label>
+    <label class="opt"><input type="radio" name="q2"> "34"</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">4-dars</div>
+<h1>Ma’lumot turlari</h1>
+<p class="lead">Ma’lumotlar har xil bo‘ladi: matn, sonlar, «ha/yo‘q».</p>
+<div class="grid">
+  <div class="card"><div class="ico">📝</div><h4>String</h4><p>Qo‘shtirnoqdagi matn: <code class="inline">"Salom"</code></p></div>
+  <div class="card"><div class="ico">🔢</div><h4>Number</h4><p>Sonlar: <code class="inline">42</code>, <code class="inline">3.14</code></p></div>
+  <div class="card"><div class="ico">✅</div><h4>Boolean</h4><p><code class="inline">true</code> yoki <code class="inline">false</code></p></div>
+  <div class="card"><div class="ico">❓</div><h4>Undefined</h4><p>«Bo‘sh» — qiymat hali yo‘q</p></div>
+</div>
+<h2>Turini qanday bilamiz? typeof</h2>
+${play(`console.log(typeof "Salom");    // string\nconsole.log(typeof 42);          // number\nconsole.log(typeof true);        // boolean\nconsole.log(typeof undefined);   // undefined`)}
+<div class="warn"><b>⚠ Xato</b>Qo‘shtirnoqdagi son — bu <b>matn</b>! <code class="inline">"5" + "5"</code> = <code class="inline">"55"</code>, lekin <code class="inline">5 + 5</code> = <code class="inline">10</code>.</div>
+${play(`let x = "5" + "5";\nlet y = 5 + 5;\nconsole.log("Matn:", x);\nconsole.log("Son:", y);`)}
+<h2>O‘zgartirish</h2>
+${play(`let text = "10";\nlet num = Number(text);\nconsole.log(num + 5);   // 15, "105" emas`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. <code class="inline">true</code> qiymatining turi?</div>
+    <label class="opt"><input type="radio" name="q1"> string</label>
+    <label class="opt"><input type="radio" name="q1"> boolean</label>
+    <label class="opt"><input type="radio" name="q1"> number</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">2. <code class="inline">"3" + "4"</code> nechiga teng?</div>
+    <label class="opt"><input type="radio" name="q2"> 7</label>
+    <label class="opt"><input type="radio" name="q2"> 12</label>
+    <label class="opt"><input type="radio" name="q2"> "34"</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 5. ОПЕРАТОРЫ ---------- */
+{
+id:"operators",
+group:{ru:"Основы",uz:"Asoslar"},
+title:{ru:"Операторы",uz:"Operatorlar"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 5</div>
+<h1>Операторы — действия с данными</h1>
+<h2>Арифметические</h2>
+<table><tr><th>Оператор</th><th>Значение</th><th>Пример</th><th>=</th></tr>
+<tr><td><code>+</code></td><td>сложение</td><td><code>5 + 3</code></td><td>8</td></tr>
+<tr><td><code>-</code></td><td>вычитание</td><td><code>5 - 3</code></td><td>2</td></tr>
+<tr><td><code>*</code></td><td>умножение</td><td><code>5 * 3</code></td><td>15</td></tr>
+<tr><td><code>/</code></td><td>деление</td><td><code>6 / 2</code></td><td>3</td></tr>
+<tr><td><code>%</code></td><td>остаток</td><td><code>7 % 2</code></td><td>1</td></tr></table>
+${play(`console.log(10 + 5);   // 15\nconsole.log(10 % 3);   // 1 (остаток)\nconsole.log(2 * 2 * 2);// 8`)}
+<div class="tip"><b>Зачем %?</b>Проверка чётности: если <code class="inline">n % 2 === 0</code> — число чётное.</div>
+<h2>Сравнение (дают true/false)</h2>
+<table><tr><th>Оператор</th><th>Значение</th></tr>
+<tr><td><code>===</code></td><td>строго равно</td></tr>
+<tr><td><code>!==</code></td><td>не равно</td></tr>
+<tr><td><code>&gt; &lt;</code></td><td>больше / меньше</td></tr>
+<tr><td><code>&gt;= &lt;=</code></td><td>больше/меньше или равно</td></tr></table>
+${play(`console.log(10 > 5);     // true\nconsole.log(10 === "10");// false (число ≠ строка)\nconsole.log(5 !== 3);    // true`)}
+<div class="warn"><b>⚠ Важно</b>Для сравнения — <b>три</b> знака <code class="inline">===</code>. Один <code class="inline">=</code> это присвоение.</div>
+<h2>Логические</h2>
+<table><tr><th>Оператор</th><th>true когда…</th></tr>
+<tr><td><code>&amp;&amp;</code> (И)</td><td>оба условия верны</td></tr>
+<tr><td><code>||</code> (ИЛИ)</td><td>хотя бы одно верно</td></tr>
+<tr><td><code>!</code> (НЕ)</td><td>переворачивает</td></tr></table>
+${play(`let age = 20;\nconsole.log(age > 18 && age < 65); // true\nconsole.log(age < 10 || age > 18); // true\nconsole.log(!(age > 18));          // false`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="2"><div class="qtext">1. Чему равно <code class="inline">7 % 3</code>?</div>
+    <label class="opt"><input type="radio" name="q1"> 2.3</label>
+    <label class="opt"><input type="radio" name="q1"> 3</label>
+    <label class="opt"><input type="radio" name="q1"> 1</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Какой оператор сравнивает?</div>
+    <label class="opt"><input type="radio" name="q2"> =</label>
+    <label class="opt"><input type="radio" name="q2"> ===</label>
+    <label class="opt"><input type="radio" name="q2"> =&gt;</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">5-dars</div>
+<h1>Operatorlar — ma’lumot bilan amallar</h1>
+<h2>Arifmetik</h2>
+<table><tr><th>Operator</th><th>Ma’nosi</th><th>Misol</th><th>=</th></tr>
+<tr><td><code>+</code></td><td>qo‘shish</td><td><code>5 + 3</code></td><td>8</td></tr>
+<tr><td><code>-</code></td><td>ayirish</td><td><code>5 - 3</code></td><td>2</td></tr>
+<tr><td><code>*</code></td><td>ko‘paytirish</td><td><code>5 * 3</code></td><td>15</td></tr>
+<tr><td><code>/</code></td><td>bo‘lish</td><td><code>6 / 2</code></td><td>3</td></tr>
+<tr><td><code>%</code></td><td>qoldiq</td><td><code>7 % 2</code></td><td>1</td></tr></table>
+${play(`console.log(10 + 5);   // 15\nconsole.log(10 % 3);   // 1 (qoldiq)\nconsole.log(2 * 2 * 2);// 8`)}
+<div class="tip"><b>% nima uchun?</b>Juftlikni tekshirish: <code class="inline">n % 2 === 0</code> bo‘lsa — son juft.</div>
+<h2>Taqqoslash (true/false beradi)</h2>
+<table><tr><th>Operator</th><th>Ma’nosi</th></tr>
+<tr><td><code>===</code></td><td>qat’iy teng</td></tr>
+<tr><td><code>!==</code></td><td>teng emas</td></tr>
+<tr><td><code>&gt; &lt;</code></td><td>katta / kichik</td></tr>
+<tr><td><code>&gt;= &lt;=</code></td><td>katta/kichik yoki teng</td></tr></table>
+${play(`console.log(10 > 5);     // true\nconsole.log(10 === "10");// false (son ≠ matn)\nconsole.log(5 !== 3);    // true`)}
+<div class="warn"><b>⚠ Muhim</b>Taqqoslash uchun — <b>uchta</b> belgi <code class="inline">===</code>. Bitta <code class="inline">=</code> bu qiymat berish.</div>
+<h2>Mantiqiy</h2>
+<table><tr><th>Operator</th><th>true qachon…</th></tr>
+<tr><td><code>&amp;&amp;</code> (VA)</td><td>ikkala shart to‘g‘ri</td></tr>
+<tr><td><code>||</code> (YOKI)</td><td>kamida biri to‘g‘ri</td></tr>
+<tr><td><code>!</code> (EMAS)</td><td>teskari qiladi</td></tr></table>
+${play(`let age = 20;\nconsole.log(age > 18 && age < 65); // true\nconsole.log(age < 10 || age > 18); // true\nconsole.log(!(age > 18));          // false`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="2"><div class="qtext">1. <code class="inline">7 % 3</code> nechiga teng?</div>
+    <label class="opt"><input type="radio" name="q1"> 2.3</label>
+    <label class="opt"><input type="radio" name="q1"> 3</label>
+    <label class="opt"><input type="radio" name="q1"> 1</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Qaysi operator taqqoslaydi?</div>
+    <label class="opt"><input type="radio" name="q2"> =</label>
+    <label class="opt"><input type="radio" name="q2"> ===</label>
+    <label class="opt"><input type="radio" name="q2"> =&gt;</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 6. УСЛОВИЯ ---------- */
+{
+id:"conditions",
+group:{ru:"Логика",uz:"Mantiq"},
+title:{ru:"Условия (if / else)",uz:"Shartlar (if / else)"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 6</div>
+<h1>Условия — if / else</h1>
+<p class="lead">Условия позволяют программе <b>принимать решения</b>: «если… то… иначе…».</p>
+<pre>${K}if${_} (условие) {
+  ${C}// если ПРАВДА${_}
+} ${K}else${_} {
+  ${C}// если ЛОЖЬ${_}
+}</pre>
+${play(`let age = 20;\nif (age >= 18) {\n  console.log("Доступ разрешён ✅");\n} else {\n  console.log("Доступ запрещён ❌");\n}`)}
+<p>Поменяй <code class="inline">age</code> на 15 и запусти снова.</p>
+<h2>Несколько условий: else if</h2>
+${play(`let score = 75;\nif (score >= 90) {\n  console.log("Оценка: 5");\n} else if (score >= 70) {\n  console.log("Оценка: 4");\n} else if (score >= 50) {\n  console.log("Оценка: 3");\n} else {\n  console.log("Оценка: 2");\n}`)}
+<h2>Проверка пароля</h2>
+${play(`let password = "12345";\nif (password.length >= 8) {\n  console.log("Надёжный пароль 🔒");\n} else {\n  console.log("Пароль слишком короткий ⚠");\n}`)}
+<h2>Тернарный оператор</h2>
+${play(`let age = 16;\nlet status = age >= 18 ? "взрослый" : "ребёнок";\nconsole.log("Статус:", status);`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Когда выполнится <code class="inline">else</code>?</div>
+    <label class="opt"><input type="radio" name="q1"> Когда условие верно</label>
+    <label class="opt"><input type="radio" name="q1"> Когда условие ложно</label>
+    <label class="opt"><input type="radio" name="q1"> Всегда</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">2. Что выведет при <code class="inline">score = 60</code>?</div>
+    <label class="opt"><input type="radio" name="q2"> Оценка: 5</label>
+    <label class="opt"><input type="radio" name="q2"> Оценка: 4</label>
+    <label class="opt"><input type="radio" name="q2"> Оценка: 3</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">6-dars</div>
+<h1>Shartlar — if / else</h1>
+<p class="lead">Shartlar dasturga <b>qaror qabul qilish</b> imkonini beradi: «agar… bo‘lsa… aks holda…».</p>
+<pre>${K}if${_} (shart) {
+  ${C}// agar ROST bo‘lsa${_}
+} ${K}else${_} {
+  ${C}// agar YOLG‘ON bo‘lsa${_}
+}</pre>
+${play(`let age = 20;\nif (age >= 18) {\n  console.log("Ruxsat berildi ✅");\n} else {\n  console.log("Ruxsat yo‘q ❌");\n}`)}
+<p><code class="inline">age</code> ni 15 ga o‘zgartirib qaytadan bos.</p>
+<h2>Bir nechta shart: else if</h2>
+${play(`let score = 75;\nif (score >= 90) {\n  console.log("Baho: 5");\n} else if (score >= 70) {\n  console.log("Baho: 4");\n} else if (score >= 50) {\n  console.log("Baho: 3");\n} else {\n  console.log("Baho: 2");\n}`)}
+<h2>Parolni tekshirish</h2>
+${play(`let password = "12345";\nif (password.length >= 8) {\n  console.log("Ishonchli parol 🔒");\n} else {\n  console.log("Parol juda qisqa ⚠");\n}`)}
+<h2>Ternar operator</h2>
+${play(`let age = 16;\nlet status = age >= 18 ? "katta" : "bola";\nconsole.log("Holat:", status);`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. <code class="inline">else</code> qachon bajariladi?</div>
+    <label class="opt"><input type="radio" name="q1"> Shart to‘g‘ri bo‘lsa</label>
+    <label class="opt"><input type="radio" name="q1"> Shart yolg‘on bo‘lsa</label>
+    <label class="opt"><input type="radio" name="q1"> Doim</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">2. <code class="inline">score = 60</code> da nima chiqadi?</div>
+    <label class="opt"><input type="radio" name="q2"> Baho: 5</label>
+    <label class="opt"><input type="radio" name="q2"> Baho: 4</label>
+    <label class="opt"><input type="radio" name="q2"> Baho: 3</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 7. ЦИКЛЫ ---------- */
+{
+id:"loops",
+group:{ru:"Логика",uz:"Mantiq"},
+title:{ru:"Циклы (for / while)",uz:"Sikllar (for / while)"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 7</div>
+<h1>Циклы — повторяем действия</h1>
+<p class="lead">Цикл повторяет код много раз без копирования.</p>
+<h2>Цикл for</h2>
+<pre>${K}for${_} (${K}let${_} i = ${N}1${_}; i &lt;= ${N}5${_}; i++) { }</pre>
+<ul><li><code class="inline">let i = 1</code> — старт</li><li><code class="inline">i &lt;= 5</code> — условие (пока верно)</li><li><code class="inline">i++</code> — шаг (+1)</li></ul>
+${play(`for (let i = 1; i <= 5; i++) {\n  console.log("Повтор номер " + i);\n}`)}
+<h2>Сумма от 1 до 10</h2>
+${play(`let sum = 0;\nfor (let i = 1; i <= 10; i++) {\n  sum = sum + i;\n}\nconsole.log("Сумма =", sum); // 55`)}
+<h2>Таблица умножения</h2>
+${play(`let n = 7;\nfor (let i = 1; i <= 9; i++) {\n  console.log(n + " x " + i + " = " + (n * i));\n}`)}
+<h2>Цикл while</h2>
+${play(`let fuel = 5;\nwhile (fuel > 0) {\n  console.log("Едем... топлива: " + fuel);\n  fuel--;\n}\nconsole.log("Топливо кончилось 🛑");`)}
+<div class="warn"><b>⚠ Бесконечный цикл</b>Если забыть <code class="inline">i++</code>, цикл зависнет навсегда. Всегда меняй счётчик!</div>
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Сколько раз: <code class="inline">for(let i=0;i<3;i++)</code>?</div>
+    <label class="opt"><input type="radio" name="q1"> 2</label>
+    <label class="opt"><input type="radio" name="q1"> 3</label>
+    <label class="opt"><input type="radio" name="q1"> 4</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">2. Что делает <code class="inline">i++</code>?</div>
+    <label class="opt"><input type="radio" name="q2"> Уменьшает на 1</label>
+    <label class="opt"><input type="radio" name="q2"> Умножает на 2</label>
+    <label class="opt"><input type="radio" name="q2"> Увеличивает на 1</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">7-dars</div>
+<h1>Sikllar — amallarni takrorlaymiz</h1>
+<p class="lead">Sikl kodni nusxalamasdan ko‘p marta takrorlaydi.</p>
+<h2>for sikli</h2>
+<pre>${K}for${_} (${K}let${_} i = ${N}1${_}; i &lt;= ${N}5${_}; i++) { }</pre>
+<ul><li><code class="inline">let i = 1</code> — boshlanish</li><li><code class="inline">i &lt;= 5</code> — shart (rost ekan)</li><li><code class="inline">i++</code> — qadam (+1)</li></ul>
+${play(`for (let i = 1; i <= 5; i++) {\n  console.log("Takror raqami " + i);\n}`)}
+<h2>1 dan 10 gacha yig‘indi</h2>
+${play(`let sum = 0;\nfor (let i = 1; i <= 10; i++) {\n  sum = sum + i;\n}\nconsole.log("Yig‘indi =", sum); // 55`)}
+<h2>Ko‘paytirish jadvali</h2>
+${play(`let n = 7;\nfor (let i = 1; i <= 9; i++) {\n  console.log(n + " x " + i + " = " + (n * i));\n}`)}
+<h2>while sikli</h2>
+${play(`let fuel = 5;\nwhile (fuel > 0) {\n  console.log("Ketyapmiz... yoqilg‘i: " + fuel);\n  fuel--;\n}\nconsole.log("Yoqilg‘i tugadi 🛑");`)}
+<div class="warn"><b>⚠ Cheksiz sikl</b><code class="inline">i++</code> ni unutsang, sikl abadiy ishlaydi. Hisoblagichni doim o‘zgartir!</div>
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Necha marta: <code class="inline">for(let i=0;i<3;i++)</code>?</div>
+    <label class="opt"><input type="radio" name="q1"> 2</label>
+    <label class="opt"><input type="radio" name="q1"> 3</label>
+    <label class="opt"><input type="radio" name="q1"> 4</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">2. <code class="inline">i++</code> nima qiladi?</div>
+    <label class="opt"><input type="radio" name="q2"> 1 ga kamaytiradi</label>
+    <label class="opt"><input type="radio" name="q2"> 2 ga ko‘paytiradi</label>
+    <label class="opt"><input type="radio" name="q2"> 1 ga oshiradi</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 8. ФУНКЦИИ ---------- */
+{
+id:"functions",
+group:{ru:"Логика",uz:"Mantiq"},
+title:{ru:"Функции",uz:"Funksiyalar"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 8</div>
+<h1>Функции — переиспользуем код</h1>
+<p class="lead">Функция — <b>команда, которую ты создаёшь сам</b>. Пишешь один раз — используешь много.</p>
+<pre>${K}function${_} ${F}greet${_}(name) {
+  ${F}console${_}.log(${S}"Привет, "${_} + name);
+}</pre>
+<ul><li><code class="inline">function</code> — «создаю функцию»</li><li><code class="inline">greet</code> — имя</li><li><code class="inline">(name)</code> — параметр</li></ul>
+${play(`function greet(name) {\n  console.log("Привет, " + name + "!");\n}\ngreet("Самандар");\ngreet("Анвар");\ngreet("Малика");`)}
+<h2>return — возврат результата</h2>
+${play(`function add(a, b) {\n  return a + b;\n}\nlet result = add(5, 3);\nconsole.log("5 + 3 =", result);\nconsole.log("10 + 20 =", add(10, 20));`)}
+<h2>Стрелочные функции</h2>
+<pre>${K}const${_} ${F}add${_} = (a, b) ${K}=>${_} a + b;</pre>
+${play(`const square = (x) => x * x;\nconsole.log("Квадрат 5 =", square(5));\nconsole.log("Квадрат 9 =", square(9));`)}
+<div class="note"><b>💡 Параметр vs аргумент</b><b>Параметр</b> — при создании <code class="inline">(name)</code>. <b>Аргумент</b> — при вызове <code class="inline">greet("Анвар")</code>.</div>
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="2"><div class="qtext">1. Что делает <code class="inline">return</code>?</div>
+    <label class="opt"><input type="radio" name="q1"> Печатает текст</label>
+    <label class="opt"><input type="radio" name="q1"> Создаёт переменную</label>
+    <label class="opt"><input type="radio" name="q1"> Возвращает результат</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Как вызвать <code class="inline">greet</code> с «Лола»?</div>
+    <label class="opt"><input type="radio" name="q2"> greet = "Лола"</label>
+    <label class="opt"><input type="radio" name="q2"> greet("Лола")</label>
+    <label class="opt"><input type="radio" name="q2"> function greet("Лола")</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">8-dars</div>
+<h1>Funksiyalar — kodni qayta ishlatamiz</h1>
+<p class="lead">Funksiya — <b>o‘zing yaratadigan buyruq</b>. Bir marta yozasan — ko‘p marta ishlatasan.</p>
+<pre>${K}function${_} ${F}greet${_}(name) {
+  ${F}console${_}.log(${S}"Salom, "${_} + name);
+}</pre>
+<ul><li><code class="inline">function</code> — «funksiya yarataman»</li><li><code class="inline">greet</code> — nom</li><li><code class="inline">(name)</code> — parametr</li></ul>
+${play(`function greet(name) {\n  console.log("Salom, " + name + "!");\n}\ngreet("Samandar");\ngreet("Anvar");\ngreet("Malika");`)}
+<h2>return — natijani qaytarish</h2>
+${play(`function add(a, b) {\n  return a + b;\n}\nlet result = add(5, 3);\nconsole.log("5 + 3 =", result);\nconsole.log("10 + 20 =", add(10, 20));`)}
+<h2>Strelka funksiyalari</h2>
+<pre>${K}const${_} ${F}add${_} = (a, b) ${K}=>${_} a + b;</pre>
+${play(`const square = (x) => x * x;\nconsole.log("5 kvadrati =", square(5));\nconsole.log("9 kvadrati =", square(9));`)}
+<div class="note"><b>💡 Parametr vs argument</b><b>Parametr</b> — yaratishda <code class="inline">(name)</code>. <b>Argument</b> — chaqirishda <code class="inline">greet("Anvar")</code>.</div>
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="2"><div class="qtext">1. <code class="inline">return</code> nima qiladi?</div>
+    <label class="opt"><input type="radio" name="q1"> Matn chiqaradi</label>
+    <label class="opt"><input type="radio" name="q1"> O‘zgaruvchi yaratadi</label>
+    <label class="opt"><input type="radio" name="q1"> Natijani qaytaradi</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. <code class="inline">greet</code> ni «Lola» bilan qanday chaqiramiz?</div>
+    <label class="opt"><input type="radio" name="q2"> greet = "Lola"</label>
+    <label class="opt"><input type="radio" name="q2"> greet("Lola")</label>
+    <label class="opt"><input type="radio" name="q2"> function greet("Lola")</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 9. МАССИВЫ ---------- */
+{
+id:"arrays",
+group:{ru:"Данные",uz:"Ma’lumotlar"},
+title:{ru:"Массивы",uz:"Massivlar"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 9</div>
+<h1>Массивы — списки данных</h1>
+<p class="lead">Массив — <b>список</b> значений в одной переменной.</p>
+<pre>${K}let${_} fruits = [${S}"яблоко"${_}, ${S}"банан"${_}, ${S}"апельсин"${_}];</pre>
+<p>Элементы нумеруются с <b>нуля</b>!</p>
+${play(`let fruits = ["яблоко", "банан", "апельсин"];\nconsole.log(fruits[0]); // яблоко\nconsole.log(fruits[1]); // банан\nconsole.log(fruits.length); // 3`)}
+<h2>Добавляем и удаляем</h2>
+${play(`let cart = ["хлеб", "молоко"];\ncart.push("сыр");\nconsole.log(cart);\ncart.pop();\nconsole.log(cart);`)}
+<table><tr><th>Метод</th><th>Что делает</th></tr>
+<tr><td><code>.push(x)</code></td><td>добавить в конец</td></tr>
+<tr><td><code>.pop()</code></td><td>удалить последний</td></tr>
+<tr><td><code>.length</code></td><td>длина массива</td></tr></table>
+<h2>Перебор циклом</h2>
+${play(`let students = ["Али", "Вали", "Гуля"];\nfor (let i = 0; i < students.length; i++) {\n  console.log((i + 1) + ". " + students[i]);\n}`)}
+<h2>forEach</h2>
+${play(`let prices = [100, 250, 50];\nlet total = 0;\nprices.forEach(function(price) {\n  total = total + price;\n});\nconsole.log("Итого:", total);`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="0"><div class="qtext">1. Индекс первого элемента?</div>
+    <label class="opt"><input type="radio" name="q1"> 0</label>
+    <label class="opt"><input type="radio" name="q1"> 1</label>
+    <label class="opt"><input type="radio" name="q1"> -1</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Что добавляет в конец?</div>
+    <label class="opt"><input type="radio" name="q2"> .pop()</label>
+    <label class="opt"><input type="radio" name="q2"> .push()</label>
+    <label class="opt"><input type="radio" name="q2"> .length</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">9-dars</div>
+<h1>Massivlar — ma’lumotlar ro‘yxati</h1>
+<p class="lead">Massiv — bitta o‘zgaruvchidagi qiymatlar <b>ro‘yxati</b>.</p>
+<pre>${K}let${_} fruits = [${S}"olma"${_}, ${S}"banan"${_}, ${S}"apelsin"${_}];</pre>
+<p>Elementlar <b>noldan</b> raqamlanadi!</p>
+${play(`let fruits = ["olma", "banan", "apelsin"];\nconsole.log(fruits[0]); // olma\nconsole.log(fruits[1]); // banan\nconsole.log(fruits.length); // 3`)}
+<h2>Qo‘shamiz va o‘chiramiz</h2>
+${play(`let cart = ["non", "sut"];\ncart.push("pishloq");\nconsole.log(cart);\ncart.pop();\nconsole.log(cart);`)}
+<table><tr><th>Metod</th><th>Vazifasi</th></tr>
+<tr><td><code>.push(x)</code></td><td>oxiriga qo‘shish</td></tr>
+<tr><td><code>.pop()</code></td><td>oxirgisini o‘chirish</td></tr>
+<tr><td><code>.length</code></td><td>massiv uzunligi</td></tr></table>
+<h2>Sikl bilan aylanish</h2>
+${play(`let students = ["Ali", "Vali", "Gulya"];\nfor (let i = 0; i < students.length; i++) {\n  console.log((i + 1) + ". " + students[i]);\n}`)}
+<h2>forEach</h2>
+${play(`let prices = [100, 250, 50];\nlet total = 0;\nprices.forEach(function(price) {\n  total = total + price;\n});\nconsole.log("Jami:", total);`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="0"><div class="qtext">1. Birinchi element indeksi?</div>
+    <label class="opt"><input type="radio" name="q1"> 0</label>
+    <label class="opt"><input type="radio" name="q1"> 1</label>
+    <label class="opt"><input type="radio" name="q1"> -1</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Oxiriga nima qo‘shadi?</div>
+    <label class="opt"><input type="radio" name="q2"> .pop()</label>
+    <label class="opt"><input type="radio" name="q2"> .push()</label>
+    <label class="opt"><input type="radio" name="q2"> .length</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 10. ОБЪЕКТЫ ---------- */
+{
+id:"objects",
+group:{ru:"Данные",uz:"Ma’lumotlar"},
+title:{ru:"Объекты",uz:"Obyektlar"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 10</div>
+<h1>Объекты — данные с названиями</h1>
+<p class="lead">Объект хранит данные парами «ключ: значение».</p>
+<pre>${K}let${_} user = {
+  name: ${S}"Самандар"${_},
+  age: ${N}25${_}
+};</pre>
+${play(`let user = {\n  name: "Самандар",\n  age: 25,\n  city: "Ташкент"\n};\nconsole.log(user.name);\nconsole.log("Город:", user.city);`)}
+<h2>Меняем и добавляем</h2>
+${play(`let car = { brand: "Toyota", year: 2020 };\ncar.year = 2024;\ncar.color = "белый";\nconsole.log(car);`)}
+<h2>Метод (функция внутри)</h2>
+${play(`let person = {\n  name: "Анвар",\n  greet: function() {\n    console.log("Привет, я " + this.name);\n  }\n};\nperson.greet();`)}
+<div class="note"><b>💡 this</b>Внутри объекта <code class="inline">this</code> = «этот объект».</div>
+<h2>Массив объектов</h2>
+${play(`let students = [\n  { name: "Али", grade: 5 },\n  { name: "Вали", grade: 4 }\n];\nstudents.forEach(function(s) {\n  console.log(s.name + " — оценка " + s.grade);\n});`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Как получить <code class="inline">name</code> из объекта?</div>
+    <label class="opt"><input type="radio" name="q1"> user[name]</label>
+    <label class="opt"><input type="radio" name="q1"> user.name</label>
+    <label class="opt"><input type="radio" name="q1"> user(name)</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Что описывает ОДНОГО человека?</div>
+    <label class="opt"><input type="radio" name="q2"> Объект</label>
+    <label class="opt"><input type="radio" name="q2"> Массив</label>
+    <label class="opt"><input type="radio" name="q2"> Число</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">10-dars</div>
+<h1>Obyektlar — nomli ma’lumotlar</h1>
+<p class="lead">Obyekt ma’lumotni «kalit: qiymat» juftligida saqlaydi.</p>
+<pre>${K}let${_} user = {
+  name: ${S}"Samandar"${_},
+  age: ${N}25${_}
+};</pre>
+${play(`let user = {\n  name: "Samandar",\n  age: 25,\n  city: "Toshkent"\n};\nconsole.log(user.name);\nconsole.log("Shahar:", user.city);`)}
+<h2>O‘zgartiramiz va qo‘shamiz</h2>
+${play(`let car = { brand: "Toyota", year: 2020 };\ncar.year = 2024;\ncar.color = "oq";\nconsole.log(car);`)}
+<h2>Metod (ichidagi funksiya)</h2>
+${play(`let person = {\n  name: "Anvar",\n  greet: function() {\n    console.log("Salom, men " + this.name);\n  }\n};\nperson.greet();`)}
+<div class="note"><b>💡 this</b>Obyekt ichida <code class="inline">this</code> = «shu obyekt».</div>
+<h2>Obyektlar massivi</h2>
+${play(`let students = [\n  { name: "Ali", grade: 5 },\n  { name: "Vali", grade: 4 }\n];\nstudents.forEach(function(s) {\n  console.log(s.name + " — baho " + s.grade);\n});`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Obyektdan <code class="inline">name</code> ni qanday olamiz?</div>
+    <label class="opt"><input type="radio" name="q1"> user[name]</label>
+    <label class="opt"><input type="radio" name="q1"> user.name</label>
+    <label class="opt"><input type="radio" name="q1"> user(name)</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. BITTA odamni nima tasvirlaydi?</div>
+    <label class="opt"><input type="radio" name="q2"> Obyekt</label>
+    <label class="opt"><input type="radio" name="q2"> Massiv</label>
+    <label class="opt"><input type="radio" name="q2"> Son</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 11. DOM ---------- */
+{
+id:"dom",
+group:{ru:"Веб",uz:"Veb"},
+title:{ru:"DOM — управляем страницей",uz:"DOM — sahifani boshqarish"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 11</div>
+<h1>DOM — изменяем страницу из JS</h1>
+<p class="lead">DOM — представление HTML-страницы, к которому JS имеет доступ. Через него меняем текст и стили <b>на лету</b>.</p>
+<h2>Находим элемент</h2>
+<pre>${K}let${_} title = ${F}document${_}.getElementById(${S}"title"${_});
+${K}let${_} btn = ${F}document${_}.querySelector(${S}".my-button"${_});</pre>
+<h2>Меняем содержимое и стиль</h2>
+<pre>title.textContent = ${S}"Новый текст"${_};
+title.style.color = ${S}"red"${_};</pre>
+<div class="note"><b>💡 О песочнице</b>Здесь нет настоящей страницы, поэтому <code class="inline">document</code> не покажет визуал. Но <code class="inline">console.log</code> работает. На уроке вставь код в HTML-файл.</div>
+<h2>Полный пример для HTML-файла</h2>
+<pre>&lt;h1 id=${S}"title"${_}&gt;Старый текст&lt;/h1&gt;
+&lt;button id=${S}"btn"${_}&gt;Нажми&lt;/button&gt;
+&lt;script&gt;
+  ${K}let${_} title = ${F}document${_}.getElementById(${S}"title"${_});
+  ${K}let${_} btn = ${F}document${_}.getElementById(${S}"btn"${_});
+  btn.${F}addEventListener${_}(${S}"click"${_}, ${K}function${_}() {
+    title.textContent = ${S}"Изменён! 🎉"${_};
+    title.style.color = ${S}"green"${_};
+  });
+&lt;/script&gt;</pre>
+${play(`// Симуляция клика\nlet titleText = "Старый текст";\nconsole.log("До:", titleText);\ntitleText = "Изменён! 🎉";\nconsole.log("После:", titleText);`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Чем найти элемент по id?</div>
+    <label class="opt"><input type="radio" name="q1"> document.findId()</label>
+    <label class="opt"><input type="radio" name="q1"> document.getElementById()</label>
+    <label class="opt"><input type="radio" name="q1"> document.getId()</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Чем поменять текст?</div>
+    <label class="opt"><input type="radio" name="q2"> element.textContent</label>
+    <label class="opt"><input type="radio" name="q2"> element.color</label>
+    <label class="opt"><input type="radio" name="q2"> element.push</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">11-dars</div>
+<h1>DOM — sahifani JS dan o‘zgartiramiz</h1>
+<p class="lead">DOM — JS kira oladigan HTML-sahifa ko‘rinishi. U orqali matn va stillarni <b>jonli</b> o‘zgartiramiz.</p>
+<h2>Elementni topamiz</h2>
+<pre>${K}let${_} title = ${F}document${_}.getElementById(${S}"title"${_});
+${K}let${_} btn = ${F}document${_}.querySelector(${S}".my-button"${_});</pre>
+<h2>Mazmun va stilni o‘zgartiramiz</h2>
+<pre>title.textContent = ${S}"Yangi matn"${_};
+title.style.color = ${S}"red"${_};</pre>
+<div class="note"><b>💡 Sinov maydoni haqida</b>Bu yerda haqiqiy sahifa yo‘q, shuning uchun <code class="inline">document</code> vizual ko‘rsatmaydi. Lekin <code class="inline">console.log</code> ishlaydi. Darsda kodni HTML-faylga qo‘y.</div>
+<h2>HTML-fayl uchun to‘liq misol</h2>
+<pre>&lt;h1 id=${S}"title"${_}&gt;Eski matn&lt;/h1&gt;
+&lt;button id=${S}"btn"${_}&gt;Bos&lt;/button&gt;
+&lt;script&gt;
+  ${K}let${_} title = ${F}document${_}.getElementById(${S}"title"${_});
+  ${K}let${_} btn = ${F}document${_}.getElementById(${S}"btn"${_});
+  btn.${F}addEventListener${_}(${S}"click"${_}, ${K}function${_}() {
+    title.textContent = ${S}"O‘zgardi! 🎉"${_};
+    title.style.color = ${S}"green"${_};
+  });
+&lt;/script&gt;</pre>
+${play(`// Bosishni simulyatsiya\nlet titleText = "Eski matn";\nconsole.log("Oldin:", titleText);\ntitleText = "O‘zgardi! 🎉";\nconsole.log("Keyin:", titleText);`)}
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. id bo‘yicha elementni nima topadi?</div>
+    <label class="opt"><input type="radio" name="q1"> document.findId()</label>
+    <label class="opt"><input type="radio" name="q1"> document.getElementById()</label>
+    <label class="opt"><input type="radio" name="q1"> document.getId()</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Matnni nima o‘zgartiradi?</div>
+    <label class="opt"><input type="radio" name="q2"> element.textContent</label>
+    <label class="opt"><input type="radio" name="q2"> element.color</label>
+    <label class="opt"><input type="radio" name="q2"> element.push</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 12. СОБЫТИЯ ---------- */
+{
+id:"events",
+group:{ru:"Веб",uz:"Veb"},
+title:{ru:"События (клики)",uz:"Hodisalar (bosish)"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 12</div>
+<h1>События — реакция на действия</h1>
+<p class="lead">Событие — действие пользователя: клик, ввод, наведение мыши.</p>
+<pre>element.${F}addEventListener${_}(${S}"click"${_}, ${K}function${_}() {
+  ${C}// что сделать при клике${_}
+});</pre>
+<table><tr><th>Событие</th><th>Когда</th></tr>
+<tr><td><code>"click"</code></td><td>клик мышкой</td></tr>
+<tr><td><code>"mouseover"</code></td><td>навели мышь</td></tr>
+<tr><td><code>"input"</code></td><td>печатают текст</td></tr>
+<tr><td><code>"keydown"</code></td><td>нажата клавиша</td></tr></table>
+<h2>🔴 Живой пример — нажми кнопки!</h2>
+<div class="card" style="text-align:center">
+  <h3 id="liveDemoText" style="margin-top:0">Привет! Нажми кнопку 👇</h3>
+  <button class="quiz-btn" id="demoBtn1">Поздороваться</button>
+  <button class="quiz-btn" id="demoBtn2" style="background:var(--accent2);color:#fff">Случайный цвет</button>
+  <button class="quiz-btn" id="demoBtn3" style="background:var(--bg3);color:var(--text);border:1px solid var(--line)">Кликов: <span id="demoCount">0</span></button>
+</div>
+<p style="margin-top:18px">Код этого примера:</p>
+<pre>&lt;button id=${S}"btn"${_}&gt;Жми&lt;/button&gt;
+&lt;script&gt;
+  ${K}let${_} count = ${N}0${_};
+  ${F}document${_}.getElementById(${S}"btn"${_}).${F}addEventListener${_}(${S}"click"${_}, () ${K}=>${_} {
+    count++;
+    console.log(${S}"Клик "${_} + count);
+  });
+&lt;/script&gt;</pre>
+<div class="tip"><b>Это и есть «оживление» сайта!</b>На кнопках выше висит обработчик события <code class="inline">click</code>.</div>
+<div class="quiz" data-quiz>
+  <h3>✅ Мини-тест</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Чем «слушают» события?</div>
+    <label class="opt"><input type="radio" name="q1"> addClick()</label>
+    <label class="opt"><input type="radio" name="q1"> addEventListener()</label>
+    <label class="opt"><input type="radio" name="q1"> onEvent()</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Какое событие = клик?</div>
+    <label class="opt"><input type="radio" name="q2"> "click"</label>
+    <label class="opt"><input type="radio" name="q2"> "press"</label>
+    <label class="opt"><input type="radio" name="q2"> "touch"</label></div>
+  <button class="quiz-btn" data-check>Проверить ответы</button>
+  <div class="quiz-result" data-result></div>
+</div>`,
+uz:()=>`
+<div class="kicker">12-dars</div>
+<h1>Hodisalar — harakatlarga javob</h1>
+<p class="lead">Hodisa — foydalanuvchi harakati: bosish, kiritish, sichqoncha.</p>
+<pre>element.${F}addEventListener${_}(${S}"click"${_}, ${K}function${_}() {
+  ${C}// bosilganda nima qilish${_}
+});</pre>
+<table><tr><th>Hodisa</th><th>Qachon</th></tr>
+<tr><td><code>"click"</code></td><td>sichqoncha bosish</td></tr>
+<tr><td><code>"mouseover"</code></td><td>sichqoncha keldi</td></tr>
+<tr><td><code>"input"</code></td><td>matn yozilmoqda</td></tr>
+<tr><td><code>"keydown"</code></td><td>tugma bosildi</td></tr></table>
+<h2>🔴 Jonli misol — tugmalarni bos!</h2>
+<div class="card" style="text-align:center">
+  <h3 id="liveDemoText" style="margin-top:0">Salom! Tugmani bos 👇</h3>
+  <button class="quiz-btn" id="demoBtn1">Salomlashish</button>
+  <button class="quiz-btn" id="demoBtn2" style="background:var(--accent2);color:#fff">Tasodifiy rang</button>
+  <button class="quiz-btn" id="demoBtn3" style="background:var(--bg3);color:var(--text);border:1px solid var(--line)">Bosishlar: <span id="demoCount">0</span></button>
+</div>
+<p style="margin-top:18px">Bu misolning kodi:</p>
+<pre>&lt;button id=${S}"btn"${_}&gt;Bos&lt;/button&gt;
+&lt;script&gt;
+  ${K}let${_} count = ${N}0${_};
+  ${F}document${_}.getElementById(${S}"btn"${_}).${F}addEventListener${_}(${S}"click"${_}, () ${K}=>${_} {
+    count++;
+    console.log(${S}"Bosish "${_} + count);
+  });
+&lt;/script&gt;</pre>
+<div class="tip"><b>Saytni «jonlantirish» shu!</b>Yuqoridagi tugmalarda <code class="inline">click</code> hodisasi ishlovchisi bor.</div>
+<div class="quiz" data-quiz>
+  <h3>✅ Mini-test</h3>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Hodisalarni nima «tinglaydi»?</div>
+    <label class="opt"><input type="radio" name="q1"> addClick()</label>
+    <label class="opt"><input type="radio" name="q1"> addEventListener()</label>
+    <label class="opt"><input type="radio" name="q1"> onEvent()</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Qaysi hodisa = bosish?</div>
+    <label class="opt"><input type="radio" name="q2"> "click"</label>
+    <label class="opt"><input type="radio" name="q2"> "press"</label>
+    <label class="opt"><input type="radio" name="q2"> "touch"</label></div>
+  <button class="quiz-btn" data-check>Javoblarni tekshir</button>
+  <div class="quiz-result" data-result></div>
+</div>`
+}
+},
+
+/* ---------- 13. ПРОЕКТЫ ---------- */
+{
+id:"project",
+group:{ru:"Практика",uz:"Amaliyot"},
+title:{ru:"Мини-проекты",uz:"Mini-loyihalar"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 13</div>
+<h1>Мини-проекты — всё вместе</h1>
+<p class="lead">Объединяем переменные, условия, циклы и функции в реальные программы.</p>
+<h2>Проект 1 — Калькулятор</h2>
+${play(`function calc(a, b, op) {\n  if (op === "+") return a + b;\n  if (op === "-") return a - b;\n  if (op === "*") return a * b;\n  if (op === "/") return a / b;\n}\nconsole.log("10 + 5 =", calc(10, 5, "+"));\nconsole.log("10 * 5 =", calc(10, 5, "*"));`)}
+<h2>Проект 2 — Чётность</h2>
+${play(`function check(n) {\n  return n % 2 === 0 ? n + " — чётное" : n + " — нечётное";\n}\nfor (let i = 1; i <= 6; i++) {\n  console.log(check(i));\n}`)}
+<h2>Проект 3 — Максимум в массиве</h2>
+${play(`let nums = [12, 7, 45, 3, 28];\nlet max = nums[0];\nfor (let i = 1; i < nums.length; i++) {\n  if (nums[i] > max) max = nums[i];\n}\nconsole.log("Максимум:", max);`)}
+<h2>Проект 4 — Список дел</h2>
+${play(`let todos = [\n  { task: "Учить JS", done: true },\n  { task: "Сделать проект", done: false }\n];\ntodos.forEach(function(t) {\n  console.log((t.done ? "✅" : "⬜") + " " + t.task);\n});`)}
+<h2>Проект 5 — Случайное число</h2>
+${play(`let random = Math.floor(Math.random() * 100) + 1;\nconsole.log("Число:", random);\nconsole.log(random > 50 ? "Большое!" : "Маленькое!");`)}
+<p>Запусти несколько раз — число каждый раз разное!</p>
+<div class="tip"><b>🎯 Задание</b>Открой любую песочницу и поменяй значения, добавь свои условия. Лучший способ учиться — экспериментировать!</div>`,
+uz:()=>`
+<div class="kicker">13-dars</div>
+<h1>Mini-loyihalar — hammasi birga</h1>
+<p class="lead">O‘zgaruvchi, shart, sikl va funksiyalarni real dasturlarda birlashtiramiz.</p>
+<h2>1-loyiha — Kalkulyator</h2>
+${play(`function calc(a, b, op) {\n  if (op === "+") return a + b;\n  if (op === "-") return a - b;\n  if (op === "*") return a * b;\n  if (op === "/") return a / b;\n}\nconsole.log("10 + 5 =", calc(10, 5, "+"));\nconsole.log("10 * 5 =", calc(10, 5, "*"));`)}
+<h2>2-loyiha — Juftlik</h2>
+${play(`function check(n) {\n  return n % 2 === 0 ? n + " — juft" : n + " — toq";\n}\nfor (let i = 1; i <= 6; i++) {\n  console.log(check(i));\n}`)}
+<h2>3-loyiha — Massivdagi maksimum</h2>
+${play(`let nums = [12, 7, 45, 3, 28];\nlet max = nums[0];\nfor (let i = 1; i < nums.length; i++) {\n  if (nums[i] > max) max = nums[i];\n}\nconsole.log("Maksimum:", max);`)}
+<h2>4-loyiha — Vazifalar ro‘yxati</h2>
+${play(`let todos = [\n  { task: "JS o‘rganish", done: true },\n  { task: "Loyiha qilish", done: false }\n];\ntodos.forEach(function(t) {\n  console.log((t.done ? "✅" : "⬜") + " " + t.task);\n});`)}
+<h2>5-loyiha — Tasodifiy son</h2>
+${play(`let random = Math.floor(Math.random() * 100) + 1;\nconsole.log("Son:", random);\nconsole.log(random > 50 ? "Katta!" : "Kichik!");`)}
+<p>Bir necha marta bos — son har safar boshqacha!</p>
+<div class="tip"><b>🎯 Topshiriq</b>Istalgan sinov maydonini och, qiymatlarni o‘zgartir, o‘z shartlaringni qo‘sh. Eng yaxshi o‘rganish — tajriba qilish!</div>`
+}
+},
+
+/* ---------- 14. ШПАРГАЛКА ---------- */
+{
+id:"cheatsheet",
+group:{ru:"Практика",uz:"Amaliyot"},
+title:{ru:"Ошибки и шпаргалка",uz:"Xatolar va shpargalka"},
+html:{
+ru:()=>`
+<div class="kicker">Урок 14</div>
+<h1>Частые ошибки и шпаргалка</h1>
+<h2>Топ ошибок новичков</h2>
+<div class="compare">
+<div class="bad"><h5>✗ Один = в сравнении</h5><pre>${K}if${_} (x = 5) {}</pre></div>
+<div class="good"><h5>✓ Три = для сравнения</h5><pre>${K}if${_} (x === ${N}5${_}) {}</pre></div></div>
+<div class="compare">
+<div class="bad"><h5>✗ Текст без кавычек</h5><pre>${K}let${_} name = Самандар;</pre></div>
+<div class="good"><h5>✓ Текст в кавычках</h5><pre>${K}let${_} name = ${S}"Самандар"${_};</pre></div></div>
+<div class="compare">
+<div class="bad"><h5>✗ Опечатка</h5><pre>${F}consol${_}.log(x);</pre></div>
+<div class="good"><h5>✓ console</h5><pre>${F}console${_}.log(x);</pre></div></div>
+<div class="note"><b>💡 Главный совет</b>Не работает код? Открой консоль (F12). JS красным напишет <b>где</b> и <b>какая</b> ошибка.</div>
+<h2>📋 Шпаргалка</h2>
+<pre>${C}// ПЕРЕМЕННЫЕ${_}
+${K}let${_} age = ${N}25${_};       ${C}// можно менять${_}
+${K}const${_} name = ${S}"Али"${_}; ${C}// нельзя менять${_}
+
+${C}// ВЫВОД${_}
+${F}console${_}.log(x);
+
+${C}// УСЛОВИЕ${_}
+${K}if${_} (age >= ${N}18${_}) { } ${K}else${_} { }
+
+${C}// ЦИКЛ${_}
+${K}for${_} (${K}let${_} i = ${N}0${_}; i < ${N}5${_}; i++) { }
+
+${C}// ФУНКЦИЯ${_}
+${K}function${_} ${F}add${_}(a, b) { ${K}return${_} a + b; }
+
+${C}// МАССИВ${_}
+${K}let${_} list = [${N}1${_}, ${N}2${_}, ${N}3${_}];
+list.push(${N}4${_});
+
+${C}// ОБЪЕКТ${_}
+${K}let${_} user = { name: ${S}"Али"${_} };
+user.name;
+
+${C}// DOM${_}
+${F}document${_}.getElementById(${S}"id"${_});
+element.textContent = ${S}"текст"${_};</pre>
+<h2>🎓 Что дальше?</h2>
+<ul><li>Практикуйся каждый день — даже 20 минут</li><li>Делай маленькие проекты</li><li>Не бойся ошибок</li><li><a href="https://learn.javascript.ru" target="_blank">learn.javascript.ru</a></li></ul>
+<div class="tip"><b>🏆 Поздравляю!</b>Ты прошёл весь курс основ JavaScript! Это фундамент для всего остального.</div>`,
+uz:()=>`
+<div class="kicker">14-dars</div>
+<h1>Tez-tez uchraydigan xatolar va shpargalka</h1>
+<h2>Yangi boshlovchilar xatolari</h2>
+<div class="compare">
+<div class="bad"><h5>✗ Taqqoslashda bitta =</h5><pre>${K}if${_} (x = 5) {}</pre></div>
+<div class="good"><h5>✓ Taqqoslashda uchta =</h5><pre>${K}if${_} (x === ${N}5${_}) {}</pre></div></div>
+<div class="compare">
+<div class="bad"><h5>✗ Qo‘shtirnoqsiz matn</h5><pre>${K}let${_} name = Samandar;</pre></div>
+<div class="good"><h5>✓ Qo‘shtirnoqdagi matn</h5><pre>${K}let${_} name = ${S}"Samandar"${_};</pre></div></div>
+<div class="compare">
+<div class="bad"><h5>✗ Xato yozilgan</h5><pre>${F}consol${_}.log(x);</pre></div>
+<div class="good"><h5>✓ console</h5><pre>${F}console${_}.log(x);</pre></div></div>
+<div class="note"><b>💡 Asosiy maslahat</b>Kod ishlamayaptimi? Konsolni och (F12). JS qizil rangda <b>qayerda</b> va <b>qanday</b> xato borligini yozadi.</div>
+<h2>📋 Shpargalka</h2>
+<pre>${C}// O‘ZGARUVCHILAR${_}
+${K}let${_} age = ${N}25${_};       ${C}// o‘zgartirsa bo‘ladi${_}
+${K}const${_} name = ${S}"Ali"${_}; ${C}// o‘zgartirib bo‘lmaydi${_}
+
+${C}// CHIQARISH${_}
+${F}console${_}.log(x);
+
+${C}// SHART${_}
+${K}if${_} (age >= ${N}18${_}) { } ${K}else${_} { }
+
+${C}// SIKL${_}
+${K}for${_} (${K}let${_} i = ${N}0${_}; i < ${N}5${_}; i++) { }
+
+${C}// FUNKSIYA${_}
+${K}function${_} ${F}add${_}(a, b) { ${K}return${_} a + b; }
+
+${C}// MASSIV${_}
+${K}let${_} list = [${N}1${_}, ${N}2${_}, ${N}3${_}];
+list.push(${N}4${_});
+
+${C}// OBYEKT${_}
+${K}let${_} user = { name: ${S}"Ali"${_} };
+user.name;
+
+${C}// DOM${_}
+${F}document${_}.getElementById(${S}"id"${_});
+element.textContent = ${S}"matn"${_};</pre>
+<h2>🎓 Keyin nima?</h2>
+<ul><li>Har kuni mashq qil — hatto 20 daqiqa</li><li>Kichik loyihalar qil</li><li>Xatolardan qo‘rqma</li><li><a href="https://learn.javascript.ru" target="_blank">learn.javascript.ru</a></li></ul>
+<div class="tip"><b>🏆 Tabriklayman!</b>Sen JavaScript asoslari kursini to‘liq tugatding! Bu — qolgan hamma narsa uchun poydevor.</div>`
+}
+}
+
+];
+
+/* ============================================================
+   ДВИЖОК
+   ============================================================ */
+const nav=document.getElementById('nav'), content=document.getElementById('content');
+const progFill=document.getElementById('progFill'), progText=document.getElementById('progText');
+let current=0;
+let done=JSON.parse(localStorage.getItem('jsCourseDone')||'[]');
+
+function t(){return UI[lang];}
+
+function render(){
+  document.documentElement.lang = lang;
+  document.getElementById('brandTitle').textContent = t().brand;
+  document.getElementById('brandSub').textContent = t().sub;
+  document.getElementById('topTitle').textContent = lang==='ru'?'JavaScript с нуля':'JavaScript noldan';
+  document.querySelectorAll('.lang button').forEach(b=>b.classList.toggle('active', b.dataset.lang===lang));
+
+  /* меню */
+  nav.innerHTML='';
+  let lastGroup='';
+  LESSONS.forEach((les,i)=>{
+    if(les.group[lang]!==lastGroup){
+      const g=document.createElement('div'); g.className='nav-group';
+      g.textContent=les.group[lang]; nav.appendChild(g); lastGroup=les.group[lang];
+    }
+    const a=document.createElement('a'); a.dataset.idx=i;
+    a.innerHTML=`<span class="num">${i+1}</span><span>${les.title[lang]}</span>`;
+    a.onclick=()=>{goTo(i);closeMenu();};
+    nav.appendChild(a);
+  });
+
+  /* уроки */
+  content.innerHTML='';
+  LESSONS.forEach((les,i)=>{
+    const d=document.createElement('div');
+    d.className='lesson'; d.dataset.idx=i;
+    d.innerHTML=les.html[lang]()+pagerHtml(i);
+    content.appendChild(d);
+  });
+
+  goTo(current);
+  updateProgress();
+  bindLiveDemo();
+}
+
+function pagerHtml(i){
+  const prev=LESSONS[i-1], next=LESSONS[i+1], tt=t();
+  return `<div class="pager">
+    <button ${prev?'':'disabled'} data-go="${i-1}"><div class="dir">${tt.back}</div><div class="ttl">${prev?prev.title[lang]:'—'}</div></button>
+    <button class="next" ${next?'':'disabled'} data-go="${i+1}"><div class="dir">${tt.next}</div><div class="ttl">${next?next.title[lang]:tt.finish}</div></button>
+  </div>`;
+}
+
+function goTo(i){
+  if(i<0||i>=LESSONS.length) return;
+  current=i;
+  document.querySelectorAll('.lesson').forEach(l=>l.classList.toggle('active',+l.dataset.idx===i));
+  document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('active',+a.dataset.idx===i));
+  markDone(i);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function markDone(i){
+  if(!done.includes(i)){done.push(i);localStorage.setItem('jsCourseDone',JSON.stringify(done));}
+  updateProgress();
+}
+function updateProgress(){
+  const total=LESSONS.length,n=done.length;
+  progFill.style.width=(n/total*100)+'%';
+  progText.textContent=t().prog(n,total);
+  document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('done',done.includes(+a.dataset.idx)));
+}
+
+content.addEventListener('click',e=>{
+  const go=e.target.closest('[data-go]'); if(go){goTo(+go.dataset.go);return;}
+  const run=e.target.closest('[data-run]'); if(run){runPlay(run.closest('.play'));return;}
+  const reset=e.target.closest('[data-reset]');
+  if(reset){const ta=reset.closest('.play').querySelector('.editor');ta.value=ta.dataset.init;
+    reset.closest('.play').querySelector('.cout').innerHTML=`<span class="empty">${t().empty}</span>`;return;}
+  const check=e.target.closest('[data-check]'); if(check){checkQuiz(check.closest('[data-quiz]'));return;}
+});
+
+function runPlay(play){
+  const code=play.querySelector('.editor').value;
+  const out=play.querySelector('.cout');
+  const logs=[];
+  const fc={log:(...a)=>logs.push({t:'log',v:a}),error:(...a)=>logs.push({t:'err',v:a}),
+            warn:(...a)=>logs.push({t:'log',v:a}),info:(...a)=>logs.push({t:'log',v:a})};
+  try{ new Function('console',code)(fc); }
+  catch(err){ logs.push({t:'err',v:[t().err+err.message]}); }
+  if(logs.length===0){out.innerHTML=`<span class="empty">${t().runOk}</span>`;return;}
+  out.innerHTML=logs.map(l=>`<div class="line ${l.t==='err'?'err':''}">${escapeHtml(l.v.map(fmt).join(' '))}</div>`).join('');
+}
+function fmt(v){
+  if(typeof v==='string')return v;
+  if(v===undefined)return 'undefined';
+  if(v===null)return 'null';
+  try{return JSON.stringify(v);}catch(e){return String(v);}
+}
+
+function checkQuiz(quiz){
+  const qs=quiz.querySelectorAll('[data-q]'); let correct=0;
+  qs.forEach(q=>{
+    const ans=+q.dataset.answer, opts=q.querySelectorAll('.opt');
+    opts.forEach(o=>o.classList.remove('correct','wrong'));
+    let chosen=-1;
+    q.querySelectorAll('input[type=radio]').forEach((r,idx)=>{if(r.checked)chosen=idx;});
+    if(chosen===ans){correct++;opts[chosen].classList.add('correct');}
+    else if(chosen>=0){opts[chosen].classList.add('wrong');opts[ans].classList.add('correct');}
+    else{opts[ans].classList.add('correct');}
+  });
+  const res=quiz.querySelector('[data-result]'); res.style.display='block';
+  const all=qs.length;
+  if(correct===all){res.style.color='var(--green)';res.textContent=t().perfect(correct,all);}
+  else{res.style.color='var(--accent)';res.textContent=t().partial(correct,all);}
+}
+
+const sidebar=document.getElementById('sidebar'), scrim=document.getElementById('scrim');
+document.getElementById('menuBtn').onclick=()=>{sidebar.classList.add('open');scrim.classList.add('show');};
+scrim.onclick=closeMenu;
+function closeMenu(){sidebar.classList.remove('open');scrim.classList.remove('show');}
+
+document.querySelectorAll('.lang button').forEach(b=>{
+  b.onclick=()=>{ lang=b.dataset.lang; localStorage.setItem('jsCourseLang',lang); render(); };
+});
+
+function bindLiveDemo(){
+  const el=document.querySelector('.lesson.active');
+  if(!el) return;
+  const tx=el.querySelector('#liveDemoText');
+  const b1=el.querySelector('#demoBtn1'), b2=el.querySelector('#demoBtn2'), b3=el.querySelector('#demoBtn3');
+  const cnt=el.querySelector('#demoCount');
+  if(!tx||!b1) return;
+  const greet=lang==='ru'
+    ?["Привет! 👋","Salom! 🇺🇿","Hello! 🌍","Молодец! 🎓","JavaScript работает! ⚡"]
+    :["Salom! 👋","Привет! 🇷🇺","Hello! 🌍","Barakalla! 🎓","JavaScript ishlayapti! ⚡"];
+  let gi=0,clicks=0;
+  b1.onclick=()=>{tx.textContent=greet[gi%greet.length];gi++;};
+  const colors=["#f7df1e","#58a6ff","#3fb950","#f85149","#d2a8ff","#ff7b72"];
+  b2.onclick=()=>{tx.style.color=colors[Math.floor(Math.random()*colors.length)];};
+  b3.onclick=()=>{clicks++;cnt.textContent=clicks;};
+}
+
+/* старт: при переходе по урокам тоже навешиваем демо */
+const _goTo=goTo;
+goTo=function(i){_goTo(i);bindLiveDemo();};
+
+render();
+</script>
+</body>
+</html>
