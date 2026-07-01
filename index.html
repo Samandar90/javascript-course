@@ -417,71 +417,125 @@ html:{
 ru:()=>`
 <div class="kicker">Урок 3</div>
 <h1>Переменные — коробки для данных</h1>
-<p class="lead">Переменная — это <b>коробка с названием</b>, в которую кладём данные, чтобы использовать их позже.</p>
-<h2>Создаём переменную</h2>
-<pre>${K}let${_} name = ${S}"Самандар"${_};
-${K}let${_} age = ${N}25${_};</pre>
-<p>Разберём <code class="inline">let name = "Самандар";</code>:</p>
-<ul><li><code class="inline">let</code> — «создаю переменную»</li><li><code class="inline">name</code> — название коробки</li><li><code class="inline">=</code> — кладём значение</li><li><code class="inline">"Самандар"</code> — значение</li><li><code class="inline">;</code> — конец команды</li></ul>
-<h2>let, const и var</h2>
-<table><tr><th>Слово</th><th>Можно менять?</th><th>Когда</th></tr>
-<tr><td><code>let</code></td><td>✅ Да</td><td>значение будет меняться</td></tr>
-<tr><td><code>const</code></td><td>❌ Нет</td><td>значение постоянное (выбирай по умолчанию)</td></tr>
-<tr><td><code>var</code></td><td>✅ Да</td><td>старый способ, почти не используют</td></tr></table>
-<div class="tip"><b>Правило профи</b>Начинай с <code class="inline">const</code>. Если нужно менять — поменяй на <code class="inline">let</code>.</div>
-<h2>Меняем значение</h2>
-${play(`let score = 0;\nconsole.log("Начало:", score);\nscore = 10;\nconsole.log("После гола:", score);\nscore = score + 5;\nconsole.log("Ещё +5:", score);`)}
+<p class="lead">Переменная — это <b>коробка с наклейкой-названием</b>, в которую программа кладёт данные, чтобы достать и использовать их позже.</p>
+
+<h2>Зачем это нужно?</h2>
+<p>Компьютер должен где-то <b>запоминать</b> информацию: имя пользователя, счёт в игре, цену товара. Переменная — это и есть «ячейка памяти» с понятным именем. Записал один раз — обращаешься по имени сколько угодно раз.</p>
+<p>Аналогия: подписанная коробка на полке. На наклейке написано <code class="inline">age</code>, а внутри лежит число <code class="inline">25</code>. Когда нужно — берёшь коробку по наклейке.</p>
+
+<h2>Создаём переменную — по частям</h2>
+<pre>${K}let${_} name = ${S}"Самандар"${_};</pre>
+<table>
+  <tr><th>Часть</th><th>Что это</th></tr>
+  <tr><td><code>let</code></td><td>команда «создать переменную»</td></tr>
+  <tr><td><code>name</code></td><td>имя коробки (придумываешь сам)</td></tr>
+  <tr><td><code>=</code></td><td>знак «положить в коробку» (присваивание)</td></tr>
+  <tr><td><code>"Самандар"</code></td><td>само значение</td></tr>
+  <tr><td><code>;</code></td><td>конец команды</td></tr>
+</table>
+<div class="warn"><b>⚠ Важно про знак =</b>В математике <code class="inline">=</code> значит «равно». В программировании <code class="inline">=</code> значит «<b>положить справа в коробку слева</b>». Это не сравнение! (сравнение будет <code class="inline">===</code> — в уроке про операторы).</div>
+
+<h2>Используем переменную</h2>
+${play(`let name = "Самандар";\nlet age = 25;\n\nconsole.log("Меня зовут " + name);\nconsole.log("Мне " + age + " лет");`)}
+<p>Обрати внимание: имя переменной пишут <b>без кавычек</b>. Кавычки — только у самого текста внутри.</p>
+
+<h2>let, const и var — три способа создать</h2>
+<table><tr><th>Слово</th><th>Можно менять?</th><th>Когда использовать</th></tr>
+<tr><td><code>let</code></td><td>✅ Да</td><td>когда значение будет меняться</td></tr>
+<tr><td><code>const</code></td><td>❌ Нет</td><td>когда значение постоянное (бери по умолчанию)</td></tr>
+<tr><td><code>var</code></td><td>✅ Да</td><td>старый способ, сейчас почти не используют</td></tr></table>
+<div class="tip"><b>Правило профи</b>Всегда начинай с <code class="inline">const</code>. Если поймёшь, что значение нужно менять — поменяй на <code class="inline">let</code>. Так меньше ошибок.</div>
+
+<h2>Меняем значение переменной</h2>
+<p>Значение <code class="inline">let</code>-переменной можно перезаписывать. Чтобы поменять — пишешь имя, <code class="inline">=</code> и новое значение (уже <b>без</b> слова <code class="inline">let</code>):</p>
+${play(`let score = 0;\nconsole.log("Начало:", score);\n\nscore = 10;              // перезаписали\nconsole.log("После гола:", score);\n\nscore = score + 5;       // взяли старое (10) и добавили 5\nconsole.log("Ещё +5:", score);`)}
+<p>Строка <code class="inline">score = score + 5</code> сбивает новичков. Читай так: «новый score = старый score (10) + 5 = 15». Компьютер сначала считает правую часть, потом кладёт результат в коробку.</p>
+
 <h2>Правила названий</h2>
 <div class="compare">
-<div class="bad"><h5>✗ Нельзя</h5><pre>${K}let${_} 1name;
-${K}let${_} my name;
-${K}let${_} class;</pre></div>
-<div class="good"><h5>✓ Правильно</h5><pre>${K}let${_} firstName;
+<div class="bad"><h5>✗ Так нельзя</h5><pre>${K}let${_} 1name;   ${C}// с цифры${_}
+${K}let${_} my name; ${C}// пробел${_}
+${K}let${_} class;   ${C}// занятое слово${_}</pre></div>
+<div class="good"><h5>✓ Так правильно</h5><pre>${K}let${_} firstName;
 ${K}let${_} userAge;
 ${K}let${_} totalPrice;</pre></div></div>
-<p>Имена пишут в стиле <b>camelCase</b>: <code class="inline">myFirstName</code>.</p>
+<ul>
+  <li>Нельзя начинать с цифры и использовать пробелы.</li>
+  <li>Имя должно быть <b>понятным</b>: <code class="inline">userAge</code> лучше, чем <code class="inline">x</code>.</li>
+  <li>Стиль <b>camelCase</b>: первое слово с маленькой, каждое следующее с большой — <code class="inline">myFirstName</code>.</li>
+</ul>
+
 <div class="quiz" data-quiz>
   <h3>✅ Мини-тест</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. Что выбрать для постоянного значения?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Что выбрать для значения, которое НЕ будет меняться?</div>
     <label class="opt"><input type="radio" name="q1"> let</label>
     <label class="opt"><input type="radio" name="q1"> const</label>
     <label class="opt"><input type="radio" name="q1"> var</label></div>
-  <div class="q" data-q data-answer="2"><div class="qtext">2. Правильное имя переменной?</div>
+  <div class="q" data-q data-answer="2"><div class="qtext">2. Какое имя переменной правильное?</div>
     <label class="opt"><input type="radio" name="q2"> 2price</label>
     <label class="opt"><input type="radio" name="q2"> user name</label>
     <label class="opt"><input type="radio" name="q2"> userName</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">3. Что означает <code class="inline">=</code> в программировании?</div>
+    <label class="opt"><input type="radio" name="q3"> Положить значение справа в переменную слева</label>
+    <label class="opt"><input type="radio" name="q3"> Проверить, равны ли значения</label>
+    <label class="opt"><input type="radio" name="q3"> Ничего не делает</label></div>
   <button class="quiz-btn" data-check>Проверить ответы</button>
   <div class="quiz-result" data-result></div>
 </div>`,
 uz:()=>`
 <div class="kicker">3-dars</div>
 <h1>O‘zgaruvchilar — ma’lumot uchun quti</h1>
-<p class="lead">O‘zgaruvchi — bu <b>nomi bor quti</b>, unga ma’lumot solamiz va keyin ishlatamiz.</p>
-<h2>O‘zgaruvchi yaratamiz</h2>
-<pre>${K}let${_} name = ${S}"Samandar"${_};
-${K}let${_} age = ${N}25${_};</pre>
-<p><code class="inline">let name = "Samandar";</code> ni ko‘rib chiqamiz:</p>
-<ul><li><code class="inline">let</code> — «o‘zgaruvchi yarataman»</li><li><code class="inline">name</code> — quti nomi</li><li><code class="inline">=</code> — qiymat solamiz</li><li><code class="inline">"Samandar"</code> — qiymat</li><li><code class="inline">;</code> — buyruq oxiri</li></ul>
-<h2>let, const va var</h2>
+<p class="lead">O‘zgaruvchi — bu <b>yorliqli quti</b>, dastur unga ma’lumot soladi va keyin olib ishlatadi.</p>
+
+<h2>Bu nima uchun kerak?</h2>
+<p>Kompyuter ma’lumotni bir joyda <b>eslab qolishi</b> kerak: foydalanuvchi ismi, o‘yin hisobi, mahsulot narxi. O‘zgaruvchi — bu tushunarli nomli «xotira katagi».</p>
+<p>O‘xshatish: javondagi yorliqli quti. Yorliqда <code class="inline">age</code> yozilgan, ichida <code class="inline">25</code> soni yotibdi.</p>
+
+<h2>O‘zgaruvchi yaratamiz — qismlarga ajratamiz</h2>
+<pre>${K}let${_} name = ${S}"Samandar"${_};</pre>
+<table>
+  <tr><th>Qism</th><th>Nima</th></tr>
+  <tr><td><code>let</code></td><td>«o‘zgaruvchi yarat» buyrug‘i</td></tr>
+  <tr><td><code>name</code></td><td>quti nomi (o‘zing tanlaysan)</td></tr>
+  <tr><td><code>=</code></td><td>«qutiga sol» belgisi (o‘zlashtirish)</td></tr>
+  <tr><td><code>"Samandar"</code></td><td>qiymat</td></tr>
+  <tr><td><code>;</code></td><td>buyruq oxiri</td></tr>
+</table>
+<div class="warn"><b>⚠ = belgisi haqida</b>Matematikada <code class="inline">=</code> «teng» degani. Dasturlashda <code class="inline">=</code> «<b>o‘ngdagini chapdagi qutiga sol</b>» degani. Bu taqqoslash emas! (taqqoslash <code class="inline">===</code> bo‘ladi).</div>
+
+<h2>O‘zgaruvchini ishlatamiz</h2>
+${play(`let name = "Samandar";\nlet age = 25;\n\nconsole.log("Ismim " + name);\nconsole.log("Yoshim " + age);`)}
+<p>E’tibor ber: o‘zgaruvchi nomi <b>qo‘shtirnoqsiz</b> yoziladi. Qo‘shtirnoq faqat matnning o‘zida.</p>
+
+<h2>let, const va var — uch xil usul</h2>
 <table><tr><th>So‘z</th><th>O‘zgartirsa bo‘ladimi?</th><th>Qachon</th></tr>
 <tr><td><code>let</code></td><td>✅ Ha</td><td>qiymat o‘zgaradi</td></tr>
 <tr><td><code>const</code></td><td>❌ Yo‘q</td><td>qiymat doimiy (asosiy tanlov)</td></tr>
 <tr><td><code>var</code></td><td>✅ Ha</td><td>eski usul, deyarli ishlatilmaydi</td></tr></table>
-<div class="tip"><b>Pro qoidasi</b><code class="inline">const</code> dan boshla. O‘zgartirish kerak bo‘lsa — <code class="inline">let</code> ga almashtir.</div>
+<div class="tip"><b>Pro qoidasi</b>Doim <code class="inline">const</code> dan boshla. O‘zgartirish kerak bo‘lsa — <code class="inline">let</code> ga almashtir.</div>
+
 <h2>Qiymatni o‘zgartiramiz</h2>
-${play(`let score = 0;\nconsole.log("Boshi:", score);\nscore = 10;\nconsole.log("Goldan keyin:", score);\nscore = score + 5;\nconsole.log("Yana +5:", score);`)}
+<p>O‘zgartirish uchun nom, <code class="inline">=</code> va yangi qiymat yozasan (<code class="inline">let</code> so‘zi <b>kerak emas</b>):</p>
+${play(`let score = 0;\nconsole.log("Boshi:", score);\n\nscore = 10;              // qayta yozdik\nconsole.log("Goldan keyin:", score);\n\nscore = score + 5;       // eskisini (10) olib 5 qo‘shdik\nconsole.log("Yana +5:", score);`)}
+<p><code class="inline">score = score + 5</code> shunday o‘qiladi: «yangi score = eski score (10) + 5 = 15».</p>
+
 <h2>Nom qoidalari</h2>
 <div class="compare">
-<div class="bad"><h5>✗ Mumkin emas</h5><pre>${K}let${_} 1name;
-${K}let${_} my name;
-${K}let${_} class;</pre></div>
+<div class="bad"><h5>✗ Mumkin emas</h5><pre>${K}let${_} 1name;   ${C}// raqamdan${_}
+${K}let${_} my name; ${C}// bo‘sh joy${_}
+${K}let${_} class;   ${C}// band so‘z${_}</pre></div>
 <div class="good"><h5>✓ To‘g‘ri</h5><pre>${K}let${_} firstName;
 ${K}let${_} userAge;
 ${K}let${_} totalPrice;</pre></div></div>
-<p>Nomlar <b>camelCase</b> uslubida: <code class="inline">myFirstName</code>.</p>
+<ul>
+  <li>Raqamdan boshlab bo‘lmaydi, bo‘sh joy bo‘lmaydi.</li>
+  <li>Nom <b>tushunarli</b> bo‘lsin: <code class="inline">userAge</code> — <code class="inline">x</code> dan yaxshi.</li>
+  <li><b>camelCase</b> uslubi: <code class="inline">myFirstName</code>.</li>
+</ul>
+
 <div class="quiz" data-quiz>
   <h3>✅ Mini-test</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. Doimiy qiymat uchun nima tanlanadi?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. O‘zgarMAYdigan qiymat uchun nima tanlanadi?</div>
     <label class="opt"><input type="radio" name="q1"> let</label>
     <label class="opt"><input type="radio" name="q1"> const</label>
     <label class="opt"><input type="radio" name="q1"> var</label></div>
@@ -489,6 +543,10 @@ ${K}let${_} totalPrice;</pre></div></div>
     <label class="opt"><input type="radio" name="q2"> 2price</label>
     <label class="opt"><input type="radio" name="q2"> user name</label>
     <label class="opt"><input type="radio" name="q2"> userName</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">3. Dasturlashda <code class="inline">=</code> nimani anglatadi?</div>
+    <label class="opt"><input type="radio" name="q3"> O‘ngdagi qiymatni chapdagi o‘zgaruvchiga solish</label>
+    <label class="opt"><input type="radio" name="q3"> Qiymatlar tengligini tekshirish</label>
+    <label class="opt"><input type="radio" name="q3"> Hech narsa qilmaydi</label></div>
   <button class="quiz-btn" data-check>Javoblarni tekshir</button>
   <div class="quiz-result" data-result></div>
 </div>`
@@ -504,22 +562,40 @@ html:{
 ru:()=>`
 <div class="kicker">Урок 4</div>
 <h1>Типы данных</h1>
-<p class="lead">Данные бывают разными: текст, числа, «да/нет».</p>
+<p class="lead">Данные бывают разного «сорта»: текст, числа, «да/нет». JavaScript различает эти сорта — они называются <b>типами</b>. От типа зависит, что с данными можно делать.</p>
+
+<h2>Почему тип важен?</h2>
+<p>С числами можно считать (<code class="inline">5 + 3 = 8</code>), а текст можно только склеивать. Если перепутать типы — программа поведёт себя не так, как ждёшь. Поэтому важно понимать, с чем ты работаешь.</p>
+
+<h2>4 главных типа для начала</h2>
 <div class="grid">
-  <div class="card"><div class="ico">📝</div><h4>String</h4><p>Текст в кавычках: <code class="inline">"Привет"</code></p></div>
-  <div class="card"><div class="ico">🔢</div><h4>Number</h4><p>Числа: <code class="inline">42</code>, <code class="inline">3.14</code></p></div>
-  <div class="card"><div class="ico">✅</div><h4>Boolean</h4><p><code class="inline">true</code> или <code class="inline">false</code></p></div>
+  <div class="card"><div class="ico">📝</div><h4>String (строка)</h4><p>Текст <b>в кавычках</b>: <code class="inline">"Привет"</code>, <code class="inline">'Али'</code></p></div>
+  <div class="card"><div class="ico">🔢</div><h4>Number (число)</h4><p>Числа <b>без кавычек</b>: <code class="inline">42</code>, <code class="inline">3.14</code>, <code class="inline">-7</code></p></div>
+  <div class="card"><div class="ico">✅</div><h4>Boolean (да/нет)</h4><p>Только два: <code class="inline">true</code> или <code class="inline">false</code></p></div>
   <div class="card"><div class="ico">❓</div><h4>Undefined</h4><p>«Пусто» — значения ещё нет</p></div>
 </div>
-<h2>Как узнать тип? typeof</h2>
+<div class="note"><b>💡 Главное отличие</b>Текст (string) <b>всегда</b> в кавычках. Число (number) — <b>без</b> кавычек. Это определяет тип: <code class="inline">"25"</code> — строка, а <code class="inline">25</code> — число.</div>
+
+<h2>Как узнать тип — команда <code class="inline">typeof</code></h2>
+<p>Если не уверен, какой тип у значения, спроси у JavaScript через <code class="inline">typeof</code>:</p>
 ${play(`console.log(typeof "Привет");   // string\nconsole.log(typeof 42);          // number\nconsole.log(typeof true);        // boolean\nconsole.log(typeof undefined);   // undefined`)}
-<div class="warn"><b>⚠ Ошибка</b>Число в кавычках — это <b>строка</b>! <code class="inline">"5" + "5"</code> = <code class="inline">"55"</code>, а <code class="inline">5 + 5</code> = <code class="inline">10</code>.</div>
-${play(`let x = "5" + "5";\nlet y = 5 + 5;\nconsole.log("Строки:", x);\nconsole.log("Числа:", y);`)}
-<h2>Преобразование</h2>
-${play(`let text = "10";\nlet num = Number(text);\nconsole.log(num + 5);   // 15, а не "105"`)}
+
+<h2>⚠ Ловушка: число в кавычках — это строка!</h2>
+<p>Это самая частая ошибка новичка. Оператор <code class="inline">+</code> ведёт себя по-разному:</p>
+<ul>
+  <li>С <b>числами</b> он <b>складывает</b>: <code class="inline">5 + 5 = 10</code>.</li>
+  <li>Со <b>строками</b> он <b>склеивает</b>: <code class="inline">"5" + "5" = "55"</code>.</li>
+</ul>
+${play(`let x = "5" + "5";   // строки склеиваются\nlet y = 5 + 5;        // числа складываются\n\nconsole.log("Строки:", x);  // "55"\nconsole.log("Числа:", y);   // 10`)}
+<p>Такое часто случается с данными из формы на сайте: то, что вводит пользователь, приходит как <b>строка</b>, даже если это цифры.</p>
+
+<h2>Преобразование типов</h2>
+<p>Строку с цифрами можно превратить в число командой <code class="inline">Number()</code>, а число в строку — <code class="inline">String()</code>:</p>
+${play(`let text = "10";        // это строка\nlet num = Number(text);  // превратили в число\n\nconsole.log(num + 5);    // 15 (правильно!)\nconsole.log(text + 5);   // "105" (склеилось, потому что text — строка)`)}
+
 <div class="quiz" data-quiz>
   <h3>✅ Мини-тест</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. Тип значения <code class="inline">true</code>?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Какого типа значение <code class="inline">true</code>?</div>
     <label class="opt"><input type="radio" name="q1"> string</label>
     <label class="opt"><input type="radio" name="q1"> boolean</label>
     <label class="opt"><input type="radio" name="q1"> number</label></div>
@@ -527,25 +603,45 @@ ${play(`let text = "10";\nlet num = Number(text);\nconsole.log(num + 5);   // 15
     <label class="opt"><input type="radio" name="q2"> 7</label>
     <label class="opt"><input type="radio" name="q2"> 12</label>
     <label class="opt"><input type="radio" name="q2"> "34"</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">3. Какого типа <code class="inline">"25"</code> (в кавычках)?</div>
+    <label class="opt"><input type="radio" name="q3"> string (строка)</label>
+    <label class="opt"><input type="radio" name="q3"> number (число)</label>
+    <label class="opt"><input type="radio" name="q3"> boolean</label></div>
   <button class="quiz-btn" data-check>Проверить ответы</button>
   <div class="quiz-result" data-result></div>
 </div>`,
 uz:()=>`
 <div class="kicker">4-dars</div>
 <h1>Ma’lumot turlari</h1>
-<p class="lead">Ma’lumotlar har xil bo‘ladi: matn, sonlar, «ha/yo‘q».</p>
+<p class="lead">Ma’lumotlar har xil «navda» bo‘ladi: matn, sonlar, «ha/yo‘q». JavaScript bu navlarni ajratadi — ular <b>turlar</b> deyiladi. Ma’lumot bilan nima qilish mumkinligi turga bog‘liq.</p>
+
+<h2>Tur nega muhim?</h2>
+<p>Sonlar bilan hisoblash mumkin (<code class="inline">5 + 3 = 8</code>), matnni esa faqat yopishtirish mumkin. Turlarni chalkashtirsang — dastur kutilmagan ishlaydi.</p>
+
+<h2>Boshlash uchun 4 asosiy tur</h2>
 <div class="grid">
-  <div class="card"><div class="ico">📝</div><h4>String</h4><p>Qo‘shtirnoqdagi matn: <code class="inline">"Salom"</code></p></div>
-  <div class="card"><div class="ico">🔢</div><h4>Number</h4><p>Sonlar: <code class="inline">42</code>, <code class="inline">3.14</code></p></div>
-  <div class="card"><div class="ico">✅</div><h4>Boolean</h4><p><code class="inline">true</code> yoki <code class="inline">false</code></p></div>
+  <div class="card"><div class="ico">📝</div><h4>String (matn)</h4><p><b>Qo‘shtirnoqdagi</b> matn: <code class="inline">"Salom"</code>, <code class="inline">'Ali'</code></p></div>
+  <div class="card"><div class="ico">🔢</div><h4>Number (son)</h4><p><b>Qo‘shtirnoqsiz</b> son: <code class="inline">42</code>, <code class="inline">3.14</code></p></div>
+  <div class="card"><div class="ico">✅</div><h4>Boolean (ha/yo‘q)</h4><p>Faqat ikki: <code class="inline">true</code> yoki <code class="inline">false</code></p></div>
   <div class="card"><div class="ico">❓</div><h4>Undefined</h4><p>«Bo‘sh» — qiymat hali yo‘q</p></div>
 </div>
-<h2>Turini qanday bilamiz? typeof</h2>
+<div class="note"><b>💡 Asosiy farq</b>Matn (string) <b>doim</b> qo‘shtirnoqda. Son (number) — qo‘shtirnoqsiz. <code class="inline">"25"</code> — matn, <code class="inline">25</code> — son.</div>
+
+<h2>Turini bilish — <code class="inline">typeof</code> buyrug‘i</h2>
 ${play(`console.log(typeof "Salom");    // string\nconsole.log(typeof 42);          // number\nconsole.log(typeof true);        // boolean\nconsole.log(typeof undefined);   // undefined`)}
-<div class="warn"><b>⚠ Xato</b>Qo‘shtirnoqdagi son — bu <b>matn</b>! <code class="inline">"5" + "5"</code> = <code class="inline">"55"</code>, lekin <code class="inline">5 + 5</code> = <code class="inline">10</code>.</div>
-${play(`let x = "5" + "5";\nlet y = 5 + 5;\nconsole.log("Matn:", x);\nconsole.log("Son:", y);`)}
-<h2>O‘zgartirish</h2>
-${play(`let text = "10";\nlet num = Number(text);\nconsole.log(num + 5);   // 15, "105" emas`)}
+
+<h2>⚠ Tuzoq: qo‘shtirnoqdagi son — bu matn!</h2>
+<p>Bu eng ko‘p uchraydigan xato. <code class="inline">+</code> operatori turlicha ishlaydi:</p>
+<ul>
+  <li><b>Sonlar</b> bilan <b>qo‘shadi</b>: <code class="inline">5 + 5 = 10</code>.</li>
+  <li><b>Matnlar</b> bilan <b>yopishtiradi</b>: <code class="inline">"5" + "5" = "55"</code>.</li>
+</ul>
+${play(`let x = "5" + "5";   // matnlar yopishadi\nlet y = 5 + 5;        // sonlar qo‘shiladi\n\nconsole.log("Matn:", x);  // "55"\nconsole.log("Son:", y);   // 10`)}
+<p>Bu ko‘pincha saytdagi formadan kelgan ma’lumotda bo‘ladi: foydalanuvchi kiritgani, hatto raqam bo‘lsa ham, <b>matn</b> bo‘lib keladi.</p>
+
+<h2>Turlarni o‘zgartirish</h2>
+${play(`let text = "10";        // bu matn\nlet num = Number(text);  // songa aylantirdik\n\nconsole.log(num + 5);    // 15 (to‘g‘ri!)\nconsole.log(text + 5);   // "105" (yopishdi, chunki text — matn)`)}
+
 <div class="quiz" data-quiz>
   <h3>✅ Mini-test</h3>
   <div class="q" data-q data-answer="1"><div class="qtext">1. <code class="inline">true</code> qiymatining turi?</div>
@@ -556,6 +652,10 @@ ${play(`let text = "10";\nlet num = Number(text);\nconsole.log(num + 5);   // 15
     <label class="opt"><input type="radio" name="q2"> 7</label>
     <label class="opt"><input type="radio" name="q2"> 12</label>
     <label class="opt"><input type="radio" name="q2"> "34"</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">3. <code class="inline">"25"</code> (qo‘shtirnoqda) qaysi tur?</div>
+    <label class="opt"><input type="radio" name="q3"> string (matn)</label>
+    <label class="opt"><input type="radio" name="q3"> number (son)</label>
+    <label class="opt"><input type="radio" name="q3"> boolean</label></div>
   <button class="quiz-btn" data-check>Javoblarni tekshir</button>
   <div class="quiz-result" data-result></div>
 </div>`
@@ -571,78 +671,107 @@ html:{
 ru:()=>`
 <div class="kicker">Урок 5</div>
 <h1>Операторы — действия с данными</h1>
-<h2>Арифметические</h2>
-<table><tr><th>Оператор</th><th>Значение</th><th>Пример</th><th>=</th></tr>
+<p class="lead">Операторы — это специальные знаки, которые что-то <b>делают</b> с данными: считают, сравнивают, объединяют. Ты их уже знаешь из математики (<code class="inline">+</code>, <code class="inline">-</code>), но в JS их больше.</p>
+
+<h2>1. Арифметические — считаем</h2>
+<table><tr><th>Оператор</th><th>Значение</th><th>Пример</th><th>Результат</th></tr>
 <tr><td><code>+</code></td><td>сложение</td><td><code>5 + 3</code></td><td>8</td></tr>
 <tr><td><code>-</code></td><td>вычитание</td><td><code>5 - 3</code></td><td>2</td></tr>
 <tr><td><code>*</code></td><td>умножение</td><td><code>5 * 3</code></td><td>15</td></tr>
 <tr><td><code>/</code></td><td>деление</td><td><code>6 / 2</code></td><td>3</td></tr>
-<tr><td><code>%</code></td><td>остаток</td><td><code>7 % 2</code></td><td>1</td></tr></table>
-${play(`console.log(10 + 5);   // 15\nconsole.log(10 % 3);   // 1 (остаток)\nconsole.log(2 * 2 * 2);// 8`)}
-<div class="tip"><b>Зачем %?</b>Проверка чётности: если <code class="inline">n % 2 === 0</code> — число чётное.</div>
-<h2>Сравнение (дают true/false)</h2>
-<table><tr><th>Оператор</th><th>Значение</th></tr>
-<tr><td><code>===</code></td><td>строго равно</td></tr>
-<tr><td><code>!==</code></td><td>не равно</td></tr>
-<tr><td><code>&gt; &lt;</code></td><td>больше / меньше</td></tr>
-<tr><td><code>&gt;= &lt;=</code></td><td>больше/меньше или равно</td></tr></table>
-${play(`console.log(10 > 5);     // true\nconsole.log(10 === "10");// false (число ≠ строка)\nconsole.log(5 !== 3);    // true`)}
-<div class="warn"><b>⚠ Важно</b>Для сравнения — <b>три</b> знака <code class="inline">===</code>. Один <code class="inline">=</code> это присвоение.</div>
-<h2>Логические</h2>
-<table><tr><th>Оператор</th><th>true когда…</th></tr>
-<tr><td><code>&amp;&amp;</code> (И)</td><td>оба условия верны</td></tr>
-<tr><td><code>||</code> (ИЛИ)</td><td>хотя бы одно верно</td></tr>
-<tr><td><code>!</code> (НЕ)</td><td>переворачивает</td></tr></table>
-${play(`let age = 20;\nconsole.log(age > 18 && age < 65); // true\nconsole.log(age < 10 || age > 18); // true\nconsole.log(!(age > 18));          // false`)}
+<tr><td><code>%</code></td><td>остаток от деления</td><td><code>7 % 2</code></td><td>1</td></tr></table>
+${play(`console.log(10 + 5);    // 15\nconsole.log(10 - 3);    // 7\nconsole.log(2 * 2 * 2); // 8\nconsole.log(10 % 3);    // 1 — остаток`)}
+<h3>🔍 Что за странный <code class="inline">%</code> (остаток)?</h3>
+<p><code class="inline">%</code> даёт <b>остаток</b> от деления. <code class="inline">7 % 2</code>: семь делим на два — получается 3 и <b>1 в остатке</b>. Значит <code class="inline">7 % 2 = 1</code>.</p>
+<div class="tip"><b>Зачем это на практике?</b>Главное применение — проверка на чётность. Если <code class="inline">число % 2 === 0</code> (остаток ноль) — число чётное. Если 1 — нечётное. Очень частый приём!</div>
+
+<h2>2. Сравнение — дают <code class="inline">true</code> или <code class="inline">false</code></h2>
+<p>Эти операторы сравнивают два значения и отвечают ДА (<code class="inline">true</code>) или НЕТ (<code class="inline">false</code>). Именно их результат используется в условиях <code class="inline">if</code> (следующие уроки).</p>
+<table><tr><th>Оператор</th><th>Значение</th><th>Пример → результат</th></tr>
+<tr><td><code>===</code></td><td>строго равно</td><td><code>5 === 5</code> → true</td></tr>
+<tr><td><code>!==</code></td><td>не равно</td><td><code>5 !== 3</code> → true</td></tr>
+<tr><td><code>&gt;</code></td><td>больше</td><td><code>5 &gt; 3</code> → true</td></tr>
+<tr><td><code>&lt;</code></td><td>меньше</td><td><code>5 &lt; 3</code> → false</td></tr>
+<tr><td><code>&gt;=</code></td><td>больше или равно</td><td><code>5 &gt;= 5</code> → true</td></tr></table>
+${play(`console.log(10 > 5);      // true\nconsole.log(10 === 10);   // true\nconsole.log(10 === "10"); // false — число ≠ строка!\nconsole.log(5 !== 3);     // true`)}
+<div class="warn"><b>⚠ Очень важно: === , а не =</b>Для сравнения используй <b>три</b> знака равно <code class="inline">===</code>. Один <code class="inline">=</code> — это «положить значение» (присвоение из урока про переменные). Это разные вещи, и путаница здесь — ошибка №1 у новичков.</div>
+
+<h2>3. Логические — И / ИЛИ / НЕ</h2>
+<p>Помогают проверить сразу несколько условий:</p>
+<table><tr><th>Оператор</th><th>Название</th><th>Даёт true, когда…</th></tr>
+<tr><td><code>&amp;&amp;</code></td><td>И (and)</td><td>оба условия верны</td></tr>
+<tr><td><code>||</code></td><td>ИЛИ (or)</td><td>хотя бы одно верно</td></tr>
+<tr><td><code>!</code></td><td>НЕ (not)</td><td>переворачивает: true→false</td></tr></table>
+${play(`let age = 20;\n\nconsole.log(age > 18 && age < 65); // true — оба верны\nconsole.log(age < 10 || age > 18); // true — второе верно\nconsole.log(!(age > 18));          // false — перевернули true`)}
+<p>Пример из жизни: «пустить на аттракцион, если рост &gt; 120 <b>И</b> есть билет» — тут нужен <code class="inline">&&</code>.</p>
+
 <div class="quiz" data-quiz>
   <h3>✅ Мини-тест</h3>
   <div class="q" data-q data-answer="2"><div class="qtext">1. Чему равно <code class="inline">7 % 3</code>?</div>
     <label class="opt"><input type="radio" name="q1"> 2.3</label>
     <label class="opt"><input type="radio" name="q1"> 3</label>
     <label class="opt"><input type="radio" name="q1"> 1</label></div>
-  <div class="q" data-q data-answer="1"><div class="qtext">2. Какой оператор сравнивает?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Какой оператор СРАВНИВАЕТ значения?</div>
     <label class="opt"><input type="radio" name="q2"> =</label>
     <label class="opt"><input type="radio" name="q2"> ===</label>
     <label class="opt"><input type="radio" name="q2"> =&gt;</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">3. <code class="inline">age > 18 && age < 65</code> даст true, когда…</div>
+    <label class="opt"><input type="radio" name="q3"> Оба условия верны одновременно</label>
+    <label class="opt"><input type="radio" name="q3"> Хотя бы одно верно</label>
+    <label class="opt"><input type="radio" name="q3"> Всегда</label></div>
   <button class="quiz-btn" data-check>Проверить ответы</button>
   <div class="quiz-result" data-result></div>
 </div>`,
 uz:()=>`
 <div class="kicker">5-dars</div>
 <h1>Operatorlar — ma’lumot bilan amallar</h1>
-<h2>Arifmetik</h2>
-<table><tr><th>Operator</th><th>Ma’nosi</th><th>Misol</th><th>=</th></tr>
+<p class="lead">Operatorlar — ma’lumot bilan biror <b>ish qiladigan</b> maxsus belgilar: hisoblaydi, taqqoslaydi, birlashtiradi. Matematikadan bilasan (<code class="inline">+</code>, <code class="inline">-</code>), JS da ular ko‘proq.</p>
+
+<h2>1. Arifmetik — hisoblaymiz</h2>
+<table><tr><th>Operator</th><th>Ma’nosi</th><th>Misol</th><th>Natija</th></tr>
 <tr><td><code>+</code></td><td>qo‘shish</td><td><code>5 + 3</code></td><td>8</td></tr>
 <tr><td><code>-</code></td><td>ayirish</td><td><code>5 - 3</code></td><td>2</td></tr>
 <tr><td><code>*</code></td><td>ko‘paytirish</td><td><code>5 * 3</code></td><td>15</td></tr>
 <tr><td><code>/</code></td><td>bo‘lish</td><td><code>6 / 2</code></td><td>3</td></tr>
-<tr><td><code>%</code></td><td>qoldiq</td><td><code>7 % 2</code></td><td>1</td></tr></table>
-${play(`console.log(10 + 5);   // 15\nconsole.log(10 % 3);   // 1 (qoldiq)\nconsole.log(2 * 2 * 2);// 8`)}
-<div class="tip"><b>% nima uchun?</b>Juftlikni tekshirish: <code class="inline">n % 2 === 0</code> bo‘lsa — son juft.</div>
-<h2>Taqqoslash (true/false beradi)</h2>
-<table><tr><th>Operator</th><th>Ma’nosi</th></tr>
-<tr><td><code>===</code></td><td>qat’iy teng</td></tr>
-<tr><td><code>!==</code></td><td>teng emas</td></tr>
-<tr><td><code>&gt; &lt;</code></td><td>katta / kichik</td></tr>
-<tr><td><code>&gt;= &lt;=</code></td><td>katta/kichik yoki teng</td></tr></table>
-${play(`console.log(10 > 5);     // true\nconsole.log(10 === "10");// false (son ≠ matn)\nconsole.log(5 !== 3);    // true`)}
-<div class="warn"><b>⚠ Muhim</b>Taqqoslash uchun — <b>uchta</b> belgi <code class="inline">===</code>. Bitta <code class="inline">=</code> bu qiymat berish.</div>
-<h2>Mantiqiy</h2>
-<table><tr><th>Operator</th><th>true qachon…</th></tr>
-<tr><td><code>&amp;&amp;</code> (VA)</td><td>ikkala shart to‘g‘ri</td></tr>
-<tr><td><code>||</code> (YOKI)</td><td>kamida biri to‘g‘ri</td></tr>
-<tr><td><code>!</code> (EMAS)</td><td>teskari qiladi</td></tr></table>
-${play(`let age = 20;\nconsole.log(age > 18 && age < 65); // true\nconsole.log(age < 10 || age > 18); // true\nconsole.log(!(age > 18));          // false`)}
+<tr><td><code>%</code></td><td>bo‘lish qoldig‘i</td><td><code>7 % 2</code></td><td>1</td></tr></table>
+${play(`console.log(10 + 5);    // 15\nconsole.log(10 - 3);    // 7\nconsole.log(2 * 2 * 2); // 8\nconsole.log(10 % 3);    // 1 — qoldiq`)}
+<h3>🔍 G‘alati <code class="inline">%</code> (qoldiq) nima?</h3>
+<p><code class="inline">%</code> bo‘lishdan qolgan <b>qoldiq</b>ni beradi. <code class="inline">7 % 2</code>: yettini ikkiga bo‘lsak — 3 chiqadi va <b>1 qoladi</b>. Demak <code class="inline">7 % 2 = 1</code>.</p>
+<div class="tip"><b>Amalda nega kerak?</b>Asosiy foydasi — juftlikni tekshirish. <code class="inline">son % 2 === 0</code> (qoldiq nol) bo‘lsa — juft. 1 bo‘lsa — toq. Juda ko‘p ishlatiladi!</div>
+
+<h2>2. Taqqoslash — <code class="inline">true</code> yoki <code class="inline">false</code> beradi</h2>
+<p>Bu operatorlar ikki qiymatni taqqoslab HA (<code class="inline">true</code>) yoki YO‘Q (<code class="inline">false</code>) deydi. Aynan ular <code class="inline">if</code> shartlarida ishlatiladi.</p>
+<table><tr><th>Operator</th><th>Ma’nosi</th><th>Misol → natija</th></tr>
+<tr><td><code>===</code></td><td>qat’iy teng</td><td><code>5 === 5</code> → true</td></tr>
+<tr><td><code>!==</code></td><td>teng emas</td><td><code>5 !== 3</code> → true</td></tr>
+<tr><td><code>&gt;</code></td><td>katta</td><td><code>5 &gt; 3</code> → true</td></tr>
+<tr><td><code>&lt;</code></td><td>kichik</td><td><code>5 &lt; 3</code> → false</td></tr>
+<tr><td><code>&gt;=</code></td><td>katta yoki teng</td><td><code>5 &gt;= 5</code> → true</td></tr></table>
+${play(`console.log(10 > 5);      // true\nconsole.log(10 === 10);   // true\nconsole.log(10 === "10"); // false — son ≠ matn!\nconsole.log(5 !== 3);     // true`)}
+<div class="warn"><b>⚠ Juda muhim: === , = emas</b>Taqqoslash uchun <b>uchta</b> belgi <code class="inline">===</code>. Bitta <code class="inline">=</code> — bu «qiymat solish» (o‘zlashtirish). Bular har xil, va bu chalkashlik — yangi boshlovchilar xatosi №1.</div>
+
+<h2>3. Mantiqiy — VA / YOKI / EMAS</h2>
+<table><tr><th>Operator</th><th>Nomi</th><th>true beradi, agar…</th></tr>
+<tr><td><code>&amp;&amp;</code></td><td>VA (and)</td><td>ikkala shart to‘g‘ri</td></tr>
+<tr><td><code>||</code></td><td>YOKI (or)</td><td>kamida biri to‘g‘ri</td></tr>
+<tr><td><code>!</code></td><td>EMAS (not)</td><td>teskari qiladi: true→false</td></tr></table>
+${play(`let age = 20;\n\nconsole.log(age > 18 && age < 65); // true — ikkalasi to‘g‘ri\nconsole.log(age < 10 || age > 18); // true — ikkinchisi to‘g‘ri\nconsole.log(!(age > 18));          // false — true ni ag‘dardik`)}
+<p>Hayotdan: «attraksionga o‘tkazish, agar bo‘y &gt; 120 <b>VA</b> chipta bor bo‘lsa» — bu yerda <code class="inline">&&</code> kerak.</p>
+
 <div class="quiz" data-quiz>
   <h3>✅ Mini-test</h3>
   <div class="q" data-q data-answer="2"><div class="qtext">1. <code class="inline">7 % 3</code> nechiga teng?</div>
     <label class="opt"><input type="radio" name="q1"> 2.3</label>
     <label class="opt"><input type="radio" name="q1"> 3</label>
     <label class="opt"><input type="radio" name="q1"> 1</label></div>
-  <div class="q" data-q data-answer="1"><div class="qtext">2. Qaysi operator taqqoslaydi?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Qaysi operator qiymatlarni TAQQOSLAYDI?</div>
     <label class="opt"><input type="radio" name="q2"> =</label>
     <label class="opt"><input type="radio" name="q2"> ===</label>
     <label class="opt"><input type="radio" name="q2"> =&gt;</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">3. <code class="inline">age > 18 && age < 65</code> qachon true beradi?</div>
+    <label class="opt"><input type="radio" name="q3"> Ikkala shart bir vaqtda to‘g‘ri bo‘lsa</label>
+    <label class="opt"><input type="radio" name="q3"> Kamida biri to‘g‘ri bo‘lsa</label>
+    <label class="opt"><input type="radio" name="q3"> Doim</label></div>
   <button class="quiz-btn" data-check>Javoblarni tekshir</button>
   <div class="quiz-result" data-result></div>
 </div>`
@@ -1229,60 +1358,138 @@ html:{
 ru:()=>`
 <div class="kicker">Урок 9</div>
 <h1>Массивы — списки данных</h1>
-<p class="lead">Массив — <b>список</b> значений в одной переменной.</p>
+<p class="lead">Массив — это <b>список</b> значений, который живёт в одной переменной. Как список покупок: вместо десяти отдельных переменных — один аккуратный список.</p>
+
+<h2>Зачем нужны массивы?</h2>
+<p>Представь, что нужно хранить имена трёх учеников. Можно так:</p>
+<div class="compare">
+  <div class="bad"><h5>✗ Без массива — неудобно</h5><pre>${K}let${_} s1 = ${S}"Али"${_};
+${K}let${_} s2 = ${S}"Вали"${_};
+${K}let${_} s3 = ${S}"Гуля"${_};</pre></div>
+  <div class="good"><h5>✓ С массивом — один список</h5><pre>${K}let${_} students = [${S}"Али"${_}, ${S}"Вали"${_}, ${S}"Гуля"${_}];</pre></div>
+</div>
+<p>А если учеников 100? Массив легко хранит хоть тысячу значений, и с ними можно работать все сразу (например, циклом).</p>
+
+<h2>Как создать массив</h2>
+<p>Значения пишут в <b>квадратных скобках</b> <code class="inline">[ ]</code> через запятую:</p>
 <pre>${K}let${_} fruits = [${S}"яблоко"${_}, ${S}"банан"${_}, ${S}"апельсин"${_}];</pre>
-<p>Элементы нумеруются с <b>нуля</b>!</p>
-${play(`let fruits = ["яблоко", "банан", "апельсин"];\nconsole.log(fruits[0]); // яблоко\nconsole.log(fruits[1]); // банан\nconsole.log(fruits.length); // 3`)}
-<h2>Добавляем и удаляем</h2>
-${play(`let cart = ["хлеб", "молоко"];\ncart.push("сыр");\nconsole.log(cart);\ncart.pop();\nconsole.log(cart);`)}
-<table><tr><th>Метод</th><th>Что делает</th></tr>
-<tr><td><code>.push(x)</code></td><td>добавить в конец</td></tr>
-<tr><td><code>.pop()</code></td><td>удалить последний</td></tr>
-<tr><td><code>.length</code></td><td>длина массива</td></tr></table>
-<h2>Перебор циклом</h2>
-${play(`let students = ["Али", "Вали", "Гуля"];\nfor (let i = 0; i < students.length; i++) {\n  console.log((i + 1) + ". " + students[i]);\n}`)}
-<h2>forEach</h2>
-${play(`let prices = [100, 250, 50];\nlet total = 0;\nprices.forEach(function(price) {\n  total = total + price;\n});\nconsole.log("Итого:", total);`)}
+
+<h2>Самое важное: индексы начинаются с НУЛЯ</h2>
+<p>У каждого элемента есть <b>номер (индекс)</b>. Но нумерация идёт не с 1, а с <b>0</b>! Это главное, что путает новичков:</p>
+<table>
+  <tr><th>Элемент</th><th>"яблоко"</th><th>"банан"</th><th>"апельсин"</th></tr>
+  <tr><th>Индекс</th><td><b>0</b></td><td><b>1</b></td><td><b>2</b></td></tr>
+</table>
+<p>Чтобы достать элемент, пишем имя массива и индекс в квадратных скобках:</p>
+${play(`let fruits = ["яблоко", "банан", "апельсин"];\n\nconsole.log(fruits[0]); // яблоко (первый!)\nconsole.log(fruits[1]); // банан\nconsole.log(fruits[2]); // апельсин\n\nconsole.log(fruits.length); // 3 — сколько всего элементов`)}
+<div class="note"><b>💡 Запомни</b><code class="inline">.length</code> — это количество элементов. А индекс последнего элемента всегда на 1 меньше: <code class="inline">length - 1</code>. У списка из 3 элементов последний индекс = 2.</div>
+
+<h2>Добавляем и удаляем элементы</h2>
+${play(`let cart = ["хлеб", "молоко"];\nconsole.log("Было:", cart);\n\ncart.push("сыр");    // добавить в КОНЕЦ\nconsole.log("После push:", cart);\n\ncart.pop();          // удалить ПОСЛЕДНИЙ\nconsole.log("После pop:", cart);`)}
+<table>
+  <tr><th>Метод</th><th>Что делает</th></tr>
+  <tr><td><code>.push(x)</code></td><td>добавить <code>x</code> в конец</td></tr>
+  <tr><td><code>.pop()</code></td><td>удалить последний</td></tr>
+  <tr><td><code>.unshift(x)</code></td><td>добавить <code>x</code> в начало</td></tr>
+  <tr><td><code>.shift()</code></td><td>удалить первый</td></tr>
+  <tr><td><code>.length</code></td><td>сколько элементов (это не метод, скобки не нужны)</td></tr>
+</table>
+
+<h2>Меняем элемент по индексу</h2>
+${play(`let colors = ["красный", "зелёный", "синий"];\n\ncolors[1] = "жёлтый";   // заменили второй элемент\nconsole.log(colors);`)}
+
+<h2>Перебор массива циклом <code class="inline">for</code></h2>
+<p>Вот где встречаются два прошлых урока! Цикл идёт по индексам от 0 до <code class="inline">length - 1</code> и достаёт каждый элемент:</p>
+${play(`let students = ["Али", "Вали", "Гуля"];\n\nfor (let i = 0; i < students.length; i++) {\n  console.log((i + 1) + ". " + students[i]);\n}`)}
+<h3>🔍 Почему условие <code class="inline">i &lt; students.length</code>, а не <code class="inline">&lt;=</code>?</h3>
+<p>Длина массива = 3, но индексы всего <b>0, 1, 2</b>. Если написать <code class="inline">&lt;= 3</code>, цикл полезет в <code class="inline">students[3]</code> — а такого элемента нет (будет <code class="inline">undefined</code>). Поэтому строго <code class="inline">&lt;</code>.</p>
+
+<h2>Современный способ перебора — <code class="inline">forEach</code></h2>
+<p><code class="inline">forEach</code> проходит по каждому элементу сам, без счётчика. Он для каждого элемента вызывает функцию:</p>
+${play(`let prices = [100, 250, 50];\nlet total = 0;\n\nprices.forEach(function(price) {\n  total = total + price;\n});\n\nconsole.log("Итого:", total); // 400`)}
+<p>Здесь <code class="inline">price</code> — это по очереди 100, потом 250, потом 50. Мы складываем всё в <code class="inline">total</code>.</p>
+
 <div class="quiz" data-quiz>
   <h3>✅ Мини-тест</h3>
-  <div class="q" data-q data-answer="0"><div class="qtext">1. Индекс первого элемента?</div>
+  <div class="q" data-q data-answer="0"><div class="qtext">1. Какой индекс у ПЕРВОГО элемента массива?</div>
     <label class="opt"><input type="radio" name="q1"> 0</label>
     <label class="opt"><input type="radio" name="q1"> 1</label>
     <label class="opt"><input type="radio" name="q1"> -1</label></div>
-  <div class="q" data-q data-answer="1"><div class="qtext">2. Что добавляет в конец?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Какой метод добавляет элемент в конец?</div>
     <label class="opt"><input type="radio" name="q2"> .pop()</label>
     <label class="opt"><input type="radio" name="q2"> .push()</label>
     <label class="opt"><input type="radio" name="q2"> .length</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">3. У массива из 5 элементов индекс последнего равен…</div>
+    <label class="opt"><input type="radio" name="q3"> 5</label>
+    <label class="opt"><input type="radio" name="q3"> 6</label>
+    <label class="opt"><input type="radio" name="q3"> 4</label></div>
   <button class="quiz-btn" data-check>Проверить ответы</button>
   <div class="quiz-result" data-result></div>
 </div>`,
 uz:()=>`
 <div class="kicker">9-dars</div>
 <h1>Massivlar — ma’lumotlar ro‘yxati</h1>
-<p class="lead">Massiv — bitta o‘zgaruvchidagi qiymatlar <b>ro‘yxati</b>.</p>
+<p class="lead">Massiv — bitta o‘zgaruvchida yashaydigan qiymatlar <b>ro‘yxati</b>. Xuddi xarid ro‘yxati kabi: o‘nta alohida o‘zgaruvchi o‘rniga — bitta tartibli ro‘yxat.</p>
+
+<h2>Massivlar nima uchun kerak?</h2>
+<div class="compare">
+  <div class="bad"><h5>✗ Massivsiz — noqulay</h5><pre>${K}let${_} s1 = ${S}"Ali"${_};
+${K}let${_} s2 = ${S}"Vali"${_};
+${K}let${_} s3 = ${S}"Gulya"${_};</pre></div>
+  <div class="good"><h5>✓ Massiv bilan — bitta ro‘yxat</h5><pre>${K}let${_} students = [${S}"Ali"${_}, ${S}"Vali"${_}, ${S}"Gulya"${_}];</pre></div>
+</div>
+<p>Agar 100 ta o‘quvchi bo‘lsa-chi? Massiv mingtagacha qiymatni saqlaydi va ular bilan birdaniga ishlash mumkin (sikl orqali).</p>
+
+<h2>Massiv qanday yaratiladi</h2>
+<p>Qiymatlar <b>kvadrat qavs</b> <code class="inline">[ ]</code> ichida vergul bilan yoziladi:</p>
 <pre>${K}let${_} fruits = [${S}"olma"${_}, ${S}"banan"${_}, ${S}"apelsin"${_}];</pre>
-<p>Elementlar <b>noldan</b> raqamlanadi!</p>
-${play(`let fruits = ["olma", "banan", "apelsin"];\nconsole.log(fruits[0]); // olma\nconsole.log(fruits[1]); // banan\nconsole.log(fruits.length); // 3`)}
-<h2>Qo‘shamiz va o‘chiramiz</h2>
-${play(`let cart = ["non", "sut"];\ncart.push("pishloq");\nconsole.log(cart);\ncart.pop();\nconsole.log(cart);`)}
-<table><tr><th>Metod</th><th>Vazifasi</th></tr>
-<tr><td><code>.push(x)</code></td><td>oxiriga qo‘shish</td></tr>
-<tr><td><code>.pop()</code></td><td>oxirgisini o‘chirish</td></tr>
-<tr><td><code>.length</code></td><td>massiv uzunligi</td></tr></table>
-<h2>Sikl bilan aylanish</h2>
-${play(`let students = ["Ali", "Vali", "Gulya"];\nfor (let i = 0; i < students.length; i++) {\n  console.log((i + 1) + ". " + students[i]);\n}`)}
-<h2>forEach</h2>
-${play(`let prices = [100, 250, 50];\nlet total = 0;\nprices.forEach(function(price) {\n  total = total + price;\n});\nconsole.log("Jami:", total);`)}
+
+<h2>Eng muhimi: indekslar NOLDAN boshlanadi</h2>
+<p>Har bir elementning <b>raqami (indeks)</b> bor. Lekin sanoq 1 dan emas, <b>0</b> dan boshlanadi!</p>
+<table>
+  <tr><th>Element</th><th>"olma"</th><th>"banan"</th><th>"apelsin"</th></tr>
+  <tr><th>Indeks</th><td><b>0</b></td><td><b>1</b></td><td><b>2</b></td></tr>
+</table>
+${play(`let fruits = ["olma", "banan", "apelsin"];\n\nconsole.log(fruits[0]); // olma (birinchi!)\nconsole.log(fruits[1]); // banan\nconsole.log(fruits[2]); // apelsin\n\nconsole.log(fruits.length); // 3 — nechta element`)}
+<div class="note"><b>💡 Eslab qol</b><code class="inline">.length</code> — elementlar soni. Oxirgi elementning indeksi doim 1 ga kam: <code class="inline">length - 1</code>. 3 elementli ro‘yxatda oxirgi indeks = 2.</div>
+
+<h2>Element qo‘shamiz va o‘chiramiz</h2>
+${play(`let cart = ["non", "sut"];\nconsole.log("Bor edi:", cart);\n\ncart.push("pishloq");  // OXIRIGA qo‘shish\nconsole.log("push dan keyin:", cart);\n\ncart.pop();            // OXIRGISINI o‘chirish\nconsole.log("pop dan keyin:", cart);`)}
+<table>
+  <tr><th>Metod</th><th>Vazifasi</th></tr>
+  <tr><td><code>.push(x)</code></td><td><code>x</code> ni oxiriga qo‘shish</td></tr>
+  <tr><td><code>.pop()</code></td><td>oxirgisini o‘chirish</td></tr>
+  <tr><td><code>.unshift(x)</code></td><td><code>x</code> ni boshiga qo‘shish</td></tr>
+  <tr><td><code>.shift()</code></td><td>birinchisini o‘chirish</td></tr>
+  <tr><td><code>.length</code></td><td>nechta element (metod emas, qavs kerak emas)</td></tr>
+</table>
+
+<h2>Indeks bo‘yicha elementni o‘zgartiramiz</h2>
+${play(`let colors = ["qizil", "yashil", "ko‘k"];\n\ncolors[1] = "sariq";   // ikkinchi elementni almashtirdik\nconsole.log(colors);`)}
+
+<h2>Massivni <code class="inline">for</code> sikli bilan aylanish</h2>
+${play(`let students = ["Ali", "Vali", "Gulya"];\n\nfor (let i = 0; i < students.length; i++) {\n  console.log((i + 1) + ". " + students[i]);\n}`)}
+<h3>🔍 Nega shart <code class="inline">i &lt; students.length</code>, <code class="inline">&lt;=</code> emas?</h3>
+<p>Uzunlik = 3, lekin indekslar faqat <b>0, 1, 2</b>. <code class="inline">&lt;= 3</code> yozsak, sikl <code class="inline">students[3]</code> ga kiradi — bunday element yo‘q (<code class="inline">undefined</code> bo‘ladi). Shuning uchun qat’iy <code class="inline">&lt;</code>.</p>
+
+<h2>Zamonaviy usul — <code class="inline">forEach</code></h2>
+${play(`let prices = [100, 250, 50];\nlet total = 0;\n\nprices.forEach(function(price) {\n  total = total + price;\n});\n\nconsole.log("Jami:", total); // 400`)}
+<p><code class="inline">price</code> — navbatma-navbat 100, keyin 250, keyin 50.</p>
+
 <div class="quiz" data-quiz>
   <h3>✅ Mini-test</h3>
-  <div class="q" data-q data-answer="0"><div class="qtext">1. Birinchi element indeksi?</div>
+  <div class="q" data-q data-answer="0"><div class="qtext">1. BIRINCHI element indeksi qanday?</div>
     <label class="opt"><input type="radio" name="q1"> 0</label>
     <label class="opt"><input type="radio" name="q1"> 1</label>
     <label class="opt"><input type="radio" name="q1"> -1</label></div>
-  <div class="q" data-q data-answer="1"><div class="qtext">2. Oxiriga nima qo‘shadi?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Qaysi metod oxiriga qo‘shadi?</div>
     <label class="opt"><input type="radio" name="q2"> .pop()</label>
     <label class="opt"><input type="radio" name="q2"> .push()</label>
     <label class="opt"><input type="radio" name="q2"> .length</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">3. 5 elementli massivda oxirgi indeks…</div>
+    <label class="opt"><input type="radio" name="q3"> 5</label>
+    <label class="opt"><input type="radio" name="q3"> 6</label>
+    <label class="opt"><input type="radio" name="q3"> 4</label></div>
   <button class="quiz-btn" data-check>Javoblarni tekshir</button>
   <div class="quiz-result" data-result></div>
 </div>`
@@ -1298,58 +1505,117 @@ html:{
 ru:()=>`
 <div class="kicker">Урок 10</div>
 <h1>Объекты — данные с названиями</h1>
-<p class="lead">Объект хранит данные парами «ключ: значение».</p>
+<p class="lead">Объект — это способ описать <b>одну вещь целиком</b> с помощью пар «название: значение». Как анкета: имя — Самандар, возраст — 25, город — Ташкент.</p>
+
+<h2>Массив или объект — в чём разница?</h2>
+<p>Ты уже знаешь массивы. Когда что использовать?</p>
+<div class="compare">
+  <div class="good"><h5>Массив — список ОДНОТИПНОГО</h5><pre>[${S}"Али"${_}, ${S}"Вали"${_}, ${S}"Гуля"${_}]</pre><p style="font-size:13px;color:var(--muted);margin:6px 0 0">Много похожих вещей. Достаём по <b>номеру</b>.</p></div>
+  <div class="good"><h5>Объект — описание ОДНОГО</h5><pre>{ name: ${S}"Али"${_}, age: ${N}20${_} }</pre><p style="font-size:13px;color:var(--muted);margin:6px 0 0">Разные свойства одной вещи. Достаём по <b>имени</b>.</p></div>
+</div>
+
+<h2>Как создать объект</h2>
+<p>Объект пишут в <b>фигурных скобках</b> <code class="inline">{ }</code>. Внутри — пары <code class="inline">ключ: значение</code> через запятую:</p>
 <pre>${K}let${_} user = {
-  name: ${S}"Самандар"${_},
-  age: ${N}25${_}
+  name: ${S}"Самандар"${_},   ${C}// ключ name → значение "Самандар"${_}
+  age: ${N}25${_},           ${C}// ключ age → значение 25${_}
+  city: ${S}"Ташкент"${_}
 };</pre>
-${play(`let user = {\n  name: "Самандар",\n  age: 25,\n  city: "Ташкент"\n};\nconsole.log(user.name);\nconsole.log("Город:", user.city);`)}
-<h2>Меняем и добавляем</h2>
-${play(`let car = { brand: "Toyota", year: 2020 };\ncar.year = 2024;\ncar.color = "белый";\nconsole.log(car);`)}
-<h2>Метод (функция внутри)</h2>
-${play(`let person = {\n  name: "Анвар",\n  greet: function() {\n    console.log("Привет, я " + this.name);\n  }\n};\nperson.greet();`)}
-<div class="note"><b>💡 this</b>Внутри объекта <code class="inline">this</code> = «этот объект».</div>
-<h2>Массив объектов</h2>
-${play(`let students = [\n  { name: "Али", grade: 5 },\n  { name: "Вали", grade: 4 }\n];\nstudents.forEach(function(s) {\n  console.log(s.name + " — оценка " + s.grade);\n});`)}
+<ul>
+  <li><b>Ключ</b> (свойство) — название, слева от двоеточия: <code class="inline">name</code>, <code class="inline">age</code>.</li>
+  <li><b>Значение</b> — данные, справа: <code class="inline">"Самандар"</code>, <code class="inline">25</code>.</li>
+</ul>
+
+<h2>Достаём данные через точку</h2>
+${play(`let user = {\n  name: "Самандар",\n  age: 25,\n  city: "Ташкент"\n};\n\nconsole.log(user.name);      // Самандар\nconsole.log(user.age);       // 25\nconsole.log("Город:", user.city);`)}
+<div class="note"><b>💡 Точечная запись</b>Пишешь имя объекта, точку и ключ: <code class="inline">user.name</code>. Читается как «свойство name объекта user».</div>
+
+<h2>Меняем и добавляем свойства</h2>
+${play(`let car = { brand: "Toyota", year: 2020 };\n\ncar.year = 2024;        // изменили существующее\ncar.color = "белый";    // добавили новое свойство\n\nconsole.log(car);`)}
+<p>Если свойство уже есть — оно меняется. Если нет — создаётся новое. Всё просто.</p>
+
+<h2>Метод — функция внутри объекта</h2>
+<p>Объект может не только хранить данные, но и <b>делать действия</b>. Функция внутри объекта называется <b>методом</b>:</p>
+${play(`let person = {\n  name: "Анвар",\n  greet: function() {\n    console.log("Привет, я " + this.name);\n  }\n};\n\nperson.greet();`)}
+<div class="note"><b>💡 Что такое <code class="inline">this</code>?</b>Внутри метода <code class="inline">this</code> означает «этот самый объект». <code class="inline">this.name</code> = свойство <code class="inline">name</code> объекта <code class="inline">person</code>, то есть «Анвар».</div>
+
+<h2>Самое мощное: массив объектов</h2>
+<p>Так устроены почти все реальные приложения: список товаров, учеников, сообщений — это массив, где каждый элемент — объект. Тут соединяются массивы, объекты и цикл:</p>
+${play(`let students = [\n  { name: "Али", grade: 5 },\n  { name: "Вали", grade: 4 },\n  { name: "Гуля", grade: 5 }\n];\n\nstudents.forEach(function(s) {\n  console.log(s.name + " — оценка " + s.grade);\n});`)}
+<p>Здесь <code class="inline">s</code> — это по очереди каждый объект-ученик. <code class="inline">s.name</code> и <code class="inline">s.grade</code> достают его свойства.</p>
+
 <div class="quiz" data-quiz>
   <h3>✅ Мини-тест</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. Как получить <code class="inline">name</code> из объекта?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Как получить <code class="inline">name</code> из объекта <code class="inline">user</code>?</div>
     <label class="opt"><input type="radio" name="q1"> user[name]</label>
     <label class="opt"><input type="radio" name="q1"> user.name</label>
     <label class="opt"><input type="radio" name="q1"> user(name)</label></div>
-  <div class="q" data-q data-answer="0"><div class="qtext">2. Что описывает ОДНОГО человека?</div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Что лучше описывает ОДНОГО человека (имя, возраст, город)?</div>
     <label class="opt"><input type="radio" name="q2"> Объект</label>
     <label class="opt"><input type="radio" name="q2"> Массив</label>
     <label class="opt"><input type="radio" name="q2"> Число</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">3. Функция внутри объекта называется…</div>
+    <label class="opt"><input type="radio" name="q3"> Цикл</label>
+    <label class="opt"><input type="radio" name="q3"> Индекс</label>
+    <label class="opt"><input type="radio" name="q3"> Метод</label></div>
   <button class="quiz-btn" data-check>Проверить ответы</button>
   <div class="quiz-result" data-result></div>
 </div>`,
 uz:()=>`
 <div class="kicker">10-dars</div>
 <h1>Obyektlar — nomli ma’lumotlar</h1>
-<p class="lead">Obyekt ma’lumotni «kalit: qiymat» juftligida saqlaydi.</p>
+<p class="lead">Obyekt — <b>bitta narsani to‘liq</b> tasvirlash usuli: «nom: qiymat» juftliklari bilan. Xuddi anketa: ism — Samandar, yosh — 25, shahar — Toshkent.</p>
+
+<h2>Massiv yoki obyekt — farqi nimada?</h2>
+<div class="compare">
+  <div class="good"><h5>Massiv — BIR XIL narsalar ro‘yxati</h5><pre>[${S}"Ali"${_}, ${S}"Vali"${_}, ${S}"Gulya"${_}]</pre><p style="font-size:13px;color:var(--muted);margin:6px 0 0">Ko‘p o‘xshash narsa. <b>Raqam</b> bilan olamiz.</p></div>
+  <div class="good"><h5>Obyekt — BITTA narsa tavsifi</h5><pre>{ name: ${S}"Ali"${_}, age: ${N}20${_} }</pre><p style="font-size:13px;color:var(--muted);margin:6px 0 0">Bitta narsaning turli xususiyatlari. <b>Nom</b> bilan olamiz.</p></div>
+</div>
+
+<h2>Obyekt qanday yaratiladi</h2>
+<p>Obyekt <b>jingalak qavs</b> <code class="inline">{ }</code> ichida yoziladi. Ichida — <code class="inline">kalit: qiymat</code> juftliklari vergul bilan:</p>
 <pre>${K}let${_} user = {
-  name: ${S}"Samandar"${_},
-  age: ${N}25${_}
+  name: ${S}"Samandar"${_},   ${C}// kalit name → qiymat "Samandar"${_}
+  age: ${N}25${_},
+  city: ${S}"Toshkent"${_}
 };</pre>
-${play(`let user = {\n  name: "Samandar",\n  age: 25,\n  city: "Toshkent"\n};\nconsole.log(user.name);\nconsole.log("Shahar:", user.city);`)}
-<h2>O‘zgartiramiz va qo‘shamiz</h2>
-${play(`let car = { brand: "Toyota", year: 2020 };\ncar.year = 2024;\ncar.color = "oq";\nconsole.log(car);`)}
-<h2>Metod (ichidagi funksiya)</h2>
-${play(`let person = {\n  name: "Anvar",\n  greet: function() {\n    console.log("Salom, men " + this.name);\n  }\n};\nperson.greet();`)}
-<div class="note"><b>💡 this</b>Obyekt ichida <code class="inline">this</code> = «shu obyekt».</div>
-<h2>Obyektlar massivi</h2>
-${play(`let students = [\n  { name: "Ali", grade: 5 },\n  { name: "Vali", grade: 4 }\n];\nstudents.forEach(function(s) {\n  console.log(s.name + " — baho " + s.grade);\n});`)}
+<ul>
+  <li><b>Kalit</b> (xususiyat) — ikki nuqtadan chapdagi nom: <code class="inline">name</code>, <code class="inline">age</code>.</li>
+  <li><b>Qiymat</b> — o‘ngdagi ma’lumot: <code class="inline">"Samandar"</code>, <code class="inline">25</code>.</li>
+</ul>
+
+<h2>Ma’lumotni nuqta orqali olamiz</h2>
+${play(`let user = {\n  name: "Samandar",\n  age: 25,\n  city: "Toshkent"\n};\n\nconsole.log(user.name);      // Samandar\nconsole.log(user.age);       // 25\nconsole.log("Shahar:", user.city);`)}
+<div class="note"><b>💡 Nuqtali yozuv</b>Obyekt nomi, nuqta va kalit: <code class="inline">user.name</code>. «user obyektining name xususiyati» deb o‘qiladi.</div>
+
+<h2>Xususiyatlarni o‘zgartiramiz va qo‘shamiz</h2>
+${play(`let car = { brand: "Toyota", year: 2020 };\n\ncar.year = 2024;        // mavjudini o‘zgartirdik\ncar.color = "oq";       // yangi xususiyat qo‘shdik\n\nconsole.log(car);`)}
+<p>Xususiyat bor bo‘lsa — o‘zgaradi. Yo‘q bo‘lsa — yangisi yaratiladi.</p>
+
+<h2>Metod — obyekt ichidagi funksiya</h2>
+<p>Obyekt nafaqat ma’lumot saqlaydi, balki <b>amal ham qiladi</b>. Obyekt ichidagi funksiya <b>metod</b> deyiladi:</p>
+${play(`let person = {\n  name: "Anvar",\n  greet: function() {\n    console.log("Salom, men " + this.name);\n  }\n};\n\nperson.greet();`)}
+<div class="note"><b>💡 <code class="inline">this</code> nima?</b>Metod ichida <code class="inline">this</code> «aynan shu obyekt» degani. <code class="inline">this.name</code> = <code class="inline">person</code> obyektining <code class="inline">name</code> xususiyati, ya’ni «Anvar».</div>
+
+<h2>Eng kuchlisi: obyektlar massivi</h2>
+<p>Deyarli barcha real ilovalar shunday: mahsulotlar, o‘quvchilar, xabarlar ro‘yxati — bu massiv, har bir elementi esa obyekt. Bu yerda massiv, obyekt va sikl birlashadi:</p>
+${play(`let students = [\n  { name: "Ali", grade: 5 },\n  { name: "Vali", grade: 4 },\n  { name: "Gulya", grade: 5 }\n];\n\nstudents.forEach(function(s) {\n  console.log(s.name + " — baho " + s.grade);\n});`)}
+<p><code class="inline">s</code> — navbatma-navbat har bir o‘quvchi-obyekt. <code class="inline">s.name</code> va <code class="inline">s.grade</code> uning xususiyatlarini oladi.</p>
+
 <div class="quiz" data-quiz>
   <h3>✅ Mini-test</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. Obyektdan <code class="inline">name</code> ni qanday olamiz?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. <code class="inline">user</code> obyektidan <code class="inline">name</code> ni qanday olamiz?</div>
     <label class="opt"><input type="radio" name="q1"> user[name]</label>
     <label class="opt"><input type="radio" name="q1"> user.name</label>
     <label class="opt"><input type="radio" name="q1"> user(name)</label></div>
-  <div class="q" data-q data-answer="0"><div class="qtext">2. BITTA odamni nima tasvirlaydi?</div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. BITTA odamni (ism, yosh, shahar) nima yaxshi tasvirlaydi?</div>
     <label class="opt"><input type="radio" name="q2"> Obyekt</label>
     <label class="opt"><input type="radio" name="q2"> Massiv</label>
     <label class="opt"><input type="radio" name="q2"> Son</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">3. Obyekt ichidagi funksiya nima deyiladi?</div>
+    <label class="opt"><input type="radio" name="q3"> Sikl</label>
+    <label class="opt"><input type="radio" name="q3"> Indeks</label>
+    <label class="opt"><input type="radio" name="q3"> Metod</label></div>
   <button class="quiz-btn" data-check>Javoblarni tekshir</button>
   <div class="quiz-result" data-result></div>
 </div>`
@@ -1365,72 +1631,167 @@ html:{
 ru:()=>`
 <div class="kicker">Урок 11</div>
 <h1>DOM — изменяем страницу из JS</h1>
-<p class="lead">DOM — представление HTML-страницы, к которому JS имеет доступ. Через него меняем текст и стили <b>на лету</b>.</p>
-<h2>Находим элемент</h2>
-<pre>${K}let${_} title = ${F}document${_}.getElementById(${S}"title"${_});
+<p class="lead">DOM — это «мост» между твоим JavaScript и HTML-страницей. Через него код может <b>найти</b> любой элемент на странице и <b>изменить</b> его: текст, цвет, картинку — прямо на лету, без перезагрузки.</p>
+
+<h2>Что такое DOM простыми словами</h2>
+<p>Когда браузер открывает HTML, он превращает его в «дерево» элементов, с которым может работать JavaScript. Это дерево и называется <b>DOM</b> (Document Object Model). Каждый тег — <code class="inline">&lt;h1&gt;</code>, <code class="inline">&lt;button&gt;</code>, <code class="inline">&lt;p&gt;</code> — становится объектом, который можно менять из кода.</p>
+<p>Работа с DOM — это всегда <b>два шага</b>:</p>
+<ol>
+  <li><b>Найти</b> нужный элемент на странице.</li>
+  <li><b>Изменить</b> его (текст, стиль, и т.д.).</li>
+</ol>
+
+<h2>Шаг 1 — находим элемент</h2>
+<p>Чаще всего элементу дают <code class="inline">id</code> в HTML, а потом находят его по этому id:</p>
+<pre>${C}// в HTML: &lt;h1 id="title"&gt;Привет&lt;/h1&gt;${_}
+
+${K}let${_} title = ${F}document${_}.getElementById(${S}"title"${_});
+
+${C}// современный универсальный способ (любой селектор, как в CSS):${_}
 ${K}let${_} btn = ${F}document${_}.querySelector(${S}".my-button"${_});</pre>
-<h2>Меняем содержимое и стиль</h2>
-<pre>title.textContent = ${S}"Новый текст"${_};
-title.style.color = ${S}"red"${_};</pre>
-<div class="note"><b>💡 О песочнице</b>Здесь нет настоящей страницы, поэтому <code class="inline">document</code> не покажет визуал. Но <code class="inline">console.log</code> работает. На уроке вставь код в HTML-файл.</div>
-<h2>Полный пример для HTML-файла</h2>
+<table>
+  <tr><th>Способ</th><th>Что находит</th></tr>
+  <tr><td><code>getElementById("x")</code></td><td>элемент с <code>id="x"</code></td></tr>
+  <tr><td><code>querySelector(".x")</code></td><td>первый элемент с классом <code>x</code></td></tr>
+  <tr><td><code>querySelector("h1")</code></td><td>первый тег <code>&lt;h1&gt;</code></td></tr>
+</table>
+
+<h2>Шаг 2 — меняем элемент</h2>
+<pre>${C}// поменять текст внутри элемента${_}
+title.textContent = ${S}"Новый текст"${_};
+
+${C}// поменять цвет${_}
+title.style.color = ${S}"red"${_};
+
+${C}// поменять размер шрифта${_}
+title.style.fontSize = ${S}"40px"${_};</pre>
+<table>
+  <tr><th>Свойство</th><th>Что меняет</th></tr>
+  <tr><td><code>.textContent</code></td><td>текст внутри элемента</td></tr>
+  <tr><td><code>.style.color</code></td><td>цвет текста</td></tr>
+  <tr><td><code>.style.background</code></td><td>цвет фона</td></tr>
+  <tr><td><code>.innerHTML</code></td><td>HTML внутри (можно вставлять теги)</td></tr>
+</table>
+
+<div class="note"><b>💡 Про эту песочницу</b>В нашей песочнице нет настоящей HTML-страницы, поэтому команды с <code class="inline">document</code> тут визуально ничего не покажут. Но <code class="inline">console.log</code> работает. Чтобы увидеть настоящий эффект — вставь код в HTML-файл (пример ниже). А живые кнопки будут в <b>следующем уроке</b>!</div>
+
+<h2>Полный рабочий пример (вставь в HTML-файл)</h2>
 <pre>&lt;h1 id=${S}"title"${_}&gt;Старый текст&lt;/h1&gt;
 &lt;button id=${S}"btn"${_}&gt;Нажми&lt;/button&gt;
+
 &lt;script&gt;
+  ${C}// 1. находим элементы${_}
   ${K}let${_} title = ${F}document${_}.getElementById(${S}"title"${_});
   ${K}let${_} btn = ${F}document${_}.getElementById(${S}"btn"${_});
+
+  ${C}// 2. при клике по кнопке — меняем заголовок${_}
   btn.${F}addEventListener${_}(${S}"click"${_}, ${K}function${_}() {
     title.textContent = ${S}"Изменён! 🎉"${_};
     title.style.color = ${S}"green"${_};
   });
 &lt;/script&gt;</pre>
-${play(`// Симуляция клика\nlet titleText = "Старый текст";\nconsole.log("До:", titleText);\ntitleText = "Изменён! 🎉";\nconsole.log("После:", titleText);`)}
+<p>Этот код: находит заголовок и кнопку, а при нажатии на кнопку меняет текст заголовка и красит его в зелёный.</p>
+
+<h2>Логику можно проверить и здесь</h2>
+<p>Сам DOM тут не покажешь, но идею «было → стало» легко смоделировать переменной:</p>
+${play(`// Симуляция того, что происходит при клике\nlet titleText = "Старый текст";\nconsole.log("До клика:", titleText);\n\ntitleText = "Изменён! 🎉";\nconsole.log("После клика:", titleText);`)}
+
 <div class="quiz" data-quiz>
   <h3>✅ Мини-тест</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. Чем найти элемент по id?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Чем найти элемент по <code class="inline">id</code>?</div>
     <label class="opt"><input type="radio" name="q1"> document.findId()</label>
     <label class="opt"><input type="radio" name="q1"> document.getElementById()</label>
     <label class="opt"><input type="radio" name="q1"> document.getId()</label></div>
-  <div class="q" data-q data-answer="0"><div class="qtext">2. Чем поменять текст?</div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Чем поменять текст элемента?</div>
     <label class="opt"><input type="radio" name="q2"> element.textContent</label>
     <label class="opt"><input type="radio" name="q2"> element.color</label>
     <label class="opt"><input type="radio" name="q2"> element.push</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">3. Работа с DOM — это всегда сколько шагов?</div>
+    <label class="opt"><input type="radio" name="q3"> Один: сразу поменять</label>
+    <label class="opt"><input type="radio" name="q3"> Три</label>
+    <label class="opt"><input type="radio" name="q3"> Два: найти элемент, потом изменить</label></div>
   <button class="quiz-btn" data-check>Проверить ответы</button>
   <div class="quiz-result" data-result></div>
 </div>`,
 uz:()=>`
 <div class="kicker">11-dars</div>
 <h1>DOM — sahifani JS dan o‘zgartiramiz</h1>
-<p class="lead">DOM — JS kira oladigan HTML-sahifa ko‘rinishi. U orqali matn va stillarni <b>jonli</b> o‘zgartiramiz.</p>
-<h2>Elementni topamiz</h2>
-<pre>${K}let${_} title = ${F}document${_}.getElementById(${S}"title"${_});
+<p class="lead">DOM — JavaScript va HTML-sahifa orasidagi «ko‘prik». U orqali kod sahifadagi istalgan elementni <b>topib</b>, uni <b>o‘zgartira</b> oladi: matn, rang, rasm — qayta yuklamasdan, jonli.</p>
+
+<h2>DOM nima — oddiy tilda</h2>
+<p>Brauzer HTML ni ochganda, uni JavaScript ishlay oladigan elementlar «daraxti»ga aylantiradi. Bu daraxt <b>DOM</b> (Document Object Model) deyiladi. Har bir teg — <code class="inline">&lt;h1&gt;</code>, <code class="inline">&lt;button&gt;</code> — koddan o‘zgartirsa bo‘ladigan obyektga aylanadi.</p>
+<p>DOM bilan ishlash doim <b>ikki qadam</b>:</p>
+<ol>
+  <li>Kerakli elementni <b>topish</b>.</li>
+  <li>Uni <b>o‘zgartirish</b> (matn, stil va h.k.).</li>
+</ol>
+
+<h2>1-qadam — elementni topamiz</h2>
+<pre>${C}// HTML da: &lt;h1 id="title"&gt;Salom&lt;/h1&gt;${_}
+
+${K}let${_} title = ${F}document${_}.getElementById(${S}"title"${_});
+
+${C}// zamonaviy universal usul (CSS kabi istalgan selektor):${_}
 ${K}let${_} btn = ${F}document${_}.querySelector(${S}".my-button"${_});</pre>
-<h2>Mazmun va stilni o‘zgartiramiz</h2>
-<pre>title.textContent = ${S}"Yangi matn"${_};
-title.style.color = ${S}"red"${_};</pre>
-<div class="note"><b>💡 Sinov maydoni haqida</b>Bu yerda haqiqiy sahifa yo‘q, shuning uchun <code class="inline">document</code> vizual ko‘rsatmaydi. Lekin <code class="inline">console.log</code> ishlaydi. Darsda kodni HTML-faylga qo‘y.</div>
-<h2>HTML-fayl uchun to‘liq misol</h2>
+<table>
+  <tr><th>Usul</th><th>Nimani topadi</th></tr>
+  <tr><td><code>getElementById("x")</code></td><td><code>id="x"</code> li element</td></tr>
+  <tr><td><code>querySelector(".x")</code></td><td><code>x</code> klassli birinchi element</td></tr>
+  <tr><td><code>querySelector("h1")</code></td><td>birinchi <code>&lt;h1&gt;</code> tegi</td></tr>
+</table>
+
+<h2>2-qadam — elementni o‘zgartiramiz</h2>
+<pre>${C}// element ichidagi matnni o‘zgartirish${_}
+title.textContent = ${S}"Yangi matn"${_};
+
+${C}// rangni o‘zgartirish${_}
+title.style.color = ${S}"red"${_};
+
+${C}// shrift o‘lchamini o‘zgartirish${_}
+title.style.fontSize = ${S}"40px"${_};</pre>
+<table>
+  <tr><th>Xususiyat</th><th>Nimani o‘zgartiradi</th></tr>
+  <tr><td><code>.textContent</code></td><td>element ichidagi matn</td></tr>
+  <tr><td><code>.style.color</code></td><td>matn rangi</td></tr>
+  <tr><td><code>.style.background</code></td><td>fon rangi</td></tr>
+  <tr><td><code>.innerHTML</code></td><td>ichidagi HTML (teg qo‘yish mumkin)</td></tr>
+</table>
+
+<div class="note"><b>💡 Sinov maydoni haqida</b>Bizning sinov maydonimizda haqiqiy HTML-sahifa yo‘q, shuning uchun <code class="inline">document</code> buyruqlari vizual natija bermaydi. Lekin <code class="inline">console.log</code> ishlaydi. Haqiqiy effektni ko‘rish uchun kodni HTML-faylga qo‘y. Jonli tugmalar esa <b>keyingi darsda</b>!</div>
+
+<h2>To‘liq ishlaydigan misol (HTML-faylga qo‘y)</h2>
 <pre>&lt;h1 id=${S}"title"${_}&gt;Eski matn&lt;/h1&gt;
 &lt;button id=${S}"btn"${_}&gt;Bos&lt;/button&gt;
+
 &lt;script&gt;
+  ${C}// 1. elementlarni topamiz${_}
   ${K}let${_} title = ${F}document${_}.getElementById(${S}"title"${_});
   ${K}let${_} btn = ${F}document${_}.getElementById(${S}"btn"${_});
+
+  ${C}// 2. bosilganda sarlavhani o‘zgartiramiz${_}
   btn.${F}addEventListener${_}(${S}"click"${_}, ${K}function${_}() {
     title.textContent = ${S}"O‘zgardi! 🎉"${_};
     title.style.color = ${S}"green"${_};
   });
 &lt;/script&gt;</pre>
-${play(`// Bosishni simulyatsiya\nlet titleText = "Eski matn";\nconsole.log("Oldin:", titleText);\ntitleText = "O‘zgardi! 🎉";\nconsole.log("Keyin:", titleText);`)}
+
+<h2>Mantiqni shu yerda tekshiramiz</h2>
+${play(`// Bosishda nima bo‘lishini simulyatsiya\nlet titleText = "Eski matn";\nconsole.log("Bosishdan oldin:", titleText);\n\ntitleText = "O‘zgardi! 🎉";\nconsole.log("Bosishdan keyin:", titleText);`)}
+
 <div class="quiz" data-quiz>
   <h3>✅ Mini-test</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. id bo‘yicha elementni nima topadi?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. <code class="inline">id</code> bo‘yicha elementni nima topadi?</div>
     <label class="opt"><input type="radio" name="q1"> document.findId()</label>
     <label class="opt"><input type="radio" name="q1"> document.getElementById()</label>
     <label class="opt"><input type="radio" name="q1"> document.getId()</label></div>
-  <div class="q" data-q data-answer="0"><div class="qtext">2. Matnni nima o‘zgartiradi?</div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Element matnini nima o‘zgartiradi?</div>
     <label class="opt"><input type="radio" name="q2"> element.textContent</label>
     <label class="opt"><input type="radio" name="q2"> element.color</label>
     <label class="opt"><input type="radio" name="q2"> element.push</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">3. DOM bilan ishlash doim necha qadam?</div>
+    <label class="opt"><input type="radio" name="q3"> Bitta: darrov o‘zgartirish</label>
+    <label class="opt"><input type="radio" name="q3"> Uchta</label>
+    <label class="opt"><input type="radio" name="q3"> Ikkita: topish, keyin o‘zgartirish</label></div>
   <button class="quiz-btn" data-check>Javoblarni tekshir</button>
   <div class="quiz-result" data-result></div>
 </div>`
@@ -1446,15 +1807,31 @@ html:{
 ru:()=>`
 <div class="kicker">Урок 12</div>
 <h1>События — реакция на действия</h1>
-<p class="lead">Событие — действие пользователя: клик, ввод, наведение мыши.</p>
+<p class="lead">Событие — это <b>действие пользователя</b>: клик по кнопке, ввод текста, наведение мыши. JavaScript умеет «слушать» эти события и реагировать на них. Именно это и делает сайт живым.</p>
+
+<h2>Как это работает — «слушатель события»</h2>
+<p>Представь охранника, который <b>ждёт</b> определённого действия и реагирует. В JS такого «охранника» ставят методом <code class="inline">addEventListener</code> («добавить слушателя события»):</p>
 <pre>element.${F}addEventListener${_}(${S}"click"${_}, ${K}function${_}() {
-  ${C}// что сделать при клике${_}
+  ${C}// этот код сработает, КОГДА нажмут на element${_}
 });</pre>
-<table><tr><th>Событие</th><th>Когда</th></tr>
+<p>Разберём по частям:</p>
+<table>
+  <tr><th>Часть</th><th>Что это</th></tr>
+  <tr><td><code>element</code></td><td>за каким элементом следим (например, кнопка)</td></tr>
+  <tr><td><code>addEventListener</code></td><td>метод «начни слушать»</td></tr>
+  <tr><td><code>"click"</code></td><td>какое событие ждём</td></tr>
+  <tr><td><code>function() { }</code></td><td>что сделать, когда событие случится</td></tr>
+</table>
+<div class="note"><b>💡 Главная идея</b>Код внутри функции выполнится <b>не сразу</b>, а только тогда, когда пользователь совершит действие. Может через секунду, может через час — когда нажмёт.</div>
+
+<h2>Частые события</h2>
+<table><tr><th>Событие</th><th>Когда срабатывает</th></tr>
 <tr><td><code>"click"</code></td><td>клик мышкой</td></tr>
-<tr><td><code>"mouseover"</code></td><td>навели мышь</td></tr>
-<tr><td><code>"input"</code></td><td>печатают текст</td></tr>
-<tr><td><code>"keydown"</code></td><td>нажата клавиша</td></tr></table>
+<tr><td><code>"mouseover"</code></td><td>навели мышь на элемент</td></tr>
+<tr><td><code>"input"</code></td><td>пользователь печатает в поле</td></tr>
+<tr><td><code>"keydown"</code></td><td>нажата клавиша на клавиатуре</td></tr>
+<tr><td><code>"submit"</code></td><td>отправка формы</td></tr></table>
+
 <h2>🔴 Живой пример — нажми кнопки!</h2>
 <div class="card" style="text-align:center">
   <h3 id="liveDemoText" style="margin-top:0">Привет! Нажми кнопку 👇</h3>
@@ -1462,41 +1839,73 @@ ru:()=>`
   <button class="quiz-btn" id="demoBtn2" style="background:var(--accent2);color:#fff">Случайный цвет</button>
   <button class="quiz-btn" id="demoBtn3" style="background:var(--bg3);color:var(--text);border:1px solid var(--line)">Кликов: <span id="demoCount">0</span></button>
 </div>
-<p style="margin-top:18px">Код этого примера:</p>
+<p style="margin-top:18px">Код кнопки-счётчика (третья кнопка выше):</p>
 <pre>&lt;button id=${S}"btn"${_}&gt;Жми&lt;/button&gt;
+
 &lt;script&gt;
-  ${K}let${_} count = ${N}0${_};
+  ${K}let${_} count = ${N}0${_};   ${C}// счётчик кликов${_}
+
   ${F}document${_}.getElementById(${S}"btn"${_}).${F}addEventListener${_}(${S}"click"${_}, () ${K}=>${_} {
-    count++;
-    console.log(${S}"Клик "${_} + count);
+    count++;                      ${C}// +1 при каждом клике${_}
+    ${F}console${_}.log(${S}"Клик "${_} + count);
   });
 &lt;/script&gt;</pre>
-<div class="tip"><b>Это и есть «оживление» сайта!</b>На кнопках выше висит обработчик события <code class="inline">click</code>.</div>
+<h3>🔍 Что здесь происходит:</h3>
+<ol>
+  <li>Заводим переменную <code class="inline">count = 0</code> — счётчик.</li>
+  <li>Вешаем на кнопку слушателя события <code class="inline">"click"</code>.</li>
+  <li>Каждый раз, когда пользователь нажимает, срабатывает функция: <code class="inline">count++</code> увеличивает счётчик и печатает новое значение.</li>
+  <li>Между кликами код «спит» и ждёт следующего нажатия.</li>
+</ol>
+<div class="tip"><b>Это и есть «оживление» сайта!</b>Именно так работают все кнопки в интернете: лайки, добавление в корзину, меню-бургер — везде <code class="inline">addEventListener</code>. Здесь встретились все прошлые темы: переменные, функции, DOM и события.</div>
+
+<h2>🎓 Итог курса</h2>
+<p>Ты прошёл путь от <code class="inline">console.log("Привет")</code> до живых кнопок, которые реагируют на пользователя. Теперь ты понимаешь, как думает JavaScript. Дальше — только практика!</p>
+
 <div class="quiz" data-quiz>
   <h3>✅ Мини-тест</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. Чем «слушают» события?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Каким методом «слушают» события?</div>
     <label class="opt"><input type="radio" name="q1"> addClick()</label>
     <label class="opt"><input type="radio" name="q1"> addEventListener()</label>
     <label class="opt"><input type="radio" name="q1"> onEvent()</label></div>
-  <div class="q" data-q data-answer="0"><div class="qtext">2. Какое событие = клик?</div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Какое событие = клик мышкой?</div>
     <label class="opt"><input type="radio" name="q2"> "click"</label>
     <label class="opt"><input type="radio" name="q2"> "press"</label>
     <label class="opt"><input type="radio" name="q2"> "touch"</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">3. Когда выполнится код внутри обработчика клика?</div>
+    <label class="opt"><input type="radio" name="q3"> Сразу при загрузке страницы</label>
+    <label class="opt"><input type="radio" name="q3"> Каждую секунду</label>
+    <label class="opt"><input type="radio" name="q3"> Только когда пользователь нажмёт</label></div>
   <button class="quiz-btn" data-check>Проверить ответы</button>
   <div class="quiz-result" data-result></div>
 </div>`,
 uz:()=>`
 <div class="kicker">12-dars</div>
 <h1>Hodisalar — harakatlarga javob</h1>
-<p class="lead">Hodisa — foydalanuvchi harakati: bosish, kiritish, sichqoncha.</p>
+<p class="lead">Hodisa — bu <b>foydalanuvchi harakati</b>: tugmani bosish, matn kiritish, sichqoncha keltirish. JavaScript bu hodisalarni «tinglab», ularga javob bera oladi. Aynan shu saytni jonli qiladi.</p>
+
+<h2>Bu qanday ishlaydi — «hodisa tinglovchisi»</h2>
+<p>Ma’lum harakatni <b>kutib</b> turadigan qorovulni tasavvur qil. JS da bunday «qorovul» <code class="inline">addEventListener</code> («hodisa tinglovchisini qo‘shish») metodi bilan qo‘yiladi:</p>
 <pre>element.${F}addEventListener${_}(${S}"click"${_}, ${K}function${_}() {
-  ${C}// bosilganda nima qilish${_}
+  ${C}// bu kod element bosilGANDA ishlaydi${_}
 });</pre>
-<table><tr><th>Hodisa</th><th>Qachon</th></tr>
+<table>
+  <tr><th>Qism</th><th>Nima</th></tr>
+  <tr><td><code>element</code></td><td>qaysi elementni kuzatamiz (masalan, tugma)</td></tr>
+  <tr><td><code>addEventListener</code></td><td>«tinglashni boshla» metodi</td></tr>
+  <tr><td><code>"click"</code></td><td>qaysi hodisani kutamiz</td></tr>
+  <tr><td><code>function() { }</code></td><td>hodisa sodir bo‘lganda nima qilish</td></tr>
+</table>
+<div class="note"><b>💡 Asosiy g‘oya</b>Funksiya ichidagi kod <b>darrov emas</b>, faqat foydalanuvchi harakat qilganda ishlaydi. Bir soniyadan keyinmi, bir soatdanmi — bosganda.</div>
+
+<h2>Ko‘p uchraydigan hodisalar</h2>
+<table><tr><th>Hodisa</th><th>Qachon ishlaydi</th></tr>
 <tr><td><code>"click"</code></td><td>sichqoncha bosish</td></tr>
-<tr><td><code>"mouseover"</code></td><td>sichqoncha keldi</td></tr>
-<tr><td><code>"input"</code></td><td>matn yozilmoqda</td></tr>
-<tr><td><code>"keydown"</code></td><td>tugma bosildi</td></tr></table>
+<tr><td><code>"mouseover"</code></td><td>elementga sichqoncha keldi</td></tr>
+<tr><td><code>"input"</code></td><td>maydonga matn yozilmoqda</td></tr>
+<tr><td><code>"keydown"</code></td><td>klaviatura tugmasi bosildi</td></tr>
+<tr><td><code>"submit"</code></td><td>forma yuborildi</td></tr></table>
+
 <h2>🔴 Jonli misol — tugmalarni bos!</h2>
 <div class="card" style="text-align:center">
   <h3 id="liveDemoText" style="margin-top:0">Salom! Tugmani bos 👇</h3>
@@ -1504,26 +1913,43 @@ uz:()=>`
   <button class="quiz-btn" id="demoBtn2" style="background:var(--accent2);color:#fff">Tasodifiy rang</button>
   <button class="quiz-btn" id="demoBtn3" style="background:var(--bg3);color:var(--text);border:1px solid var(--line)">Bosishlar: <span id="demoCount">0</span></button>
 </div>
-<p style="margin-top:18px">Bu misolning kodi:</p>
+<p style="margin-top:18px">Hisoblagich tugma kodi (yuqoridagi uchinchi tugma):</p>
 <pre>&lt;button id=${S}"btn"${_}&gt;Bos&lt;/button&gt;
+
 &lt;script&gt;
-  ${K}let${_} count = ${N}0${_};
+  ${K}let${_} count = ${N}0${_};   ${C}// bosishlar hisoblagichi${_}
+
   ${F}document${_}.getElementById(${S}"btn"${_}).${F}addEventListener${_}(${S}"click"${_}, () ${K}=>${_} {
-    count++;
-    console.log(${S}"Bosish "${_} + count);
+    count++;                      ${C}// har bosishda +1${_}
+    ${F}console${_}.log(${S}"Bosish "${_} + count);
   });
 &lt;/script&gt;</pre>
-<div class="tip"><b>Saytni «jonlantirish» shu!</b>Yuqoridagi tugmalarda <code class="inline">click</code> hodisasi ishlovchisi bor.</div>
+<h3>🔍 Bu yerda nima bo‘lyapti:</h3>
+<ol>
+  <li><code class="inline">count = 0</code> o‘zgaruvchi — hisoblagich.</li>
+  <li>Tugmaga <code class="inline">"click"</code> hodisasi tinglovchisini o‘rnatamiz.</li>
+  <li>Foydalanuvchi har bosganda funksiya ishlaydi: <code class="inline">count++</code> hisoblagichni oshiradi va yangi qiymatni chiqaradi.</li>
+  <li>Bosishlar orasida kod «uxlab» keyingisini kutadi.</li>
+</ol>
+<div class="tip"><b>Saytni «jonlantirish» shu!</b>Internetdagi barcha tugmalar shunday ishlaydi: layk, savatga qo‘shish, menyu — hamma joyda <code class="inline">addEventListener</code>. Bu yerda barcha o‘tgan mavzular uchrashdi: o‘zgaruvchi, funksiya, DOM va hodisalar.</div>
+
+<h2>🎓 Kurs yakuni</h2>
+<p>Sen <code class="inline">console.log("Salom")</code> dan foydalanuvchiga javob beradigan jonli tugmalargacha yo‘l bosib o‘tding. Endi JavaScript qanday «o‘ylashini» tushunasan. Keyin — faqat amaliyot!</p>
+
 <div class="quiz" data-quiz>
   <h3>✅ Mini-test</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. Hodisalarni nima «tinglaydi»?</div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Hodisalarni qaysi metod «tinglaydi»?</div>
     <label class="opt"><input type="radio" name="q1"> addClick()</label>
     <label class="opt"><input type="radio" name="q1"> addEventListener()</label>
     <label class="opt"><input type="radio" name="q1"> onEvent()</label></div>
-  <div class="q" data-q data-answer="0"><div class="qtext">2. Qaysi hodisa = bosish?</div>
+  <div class="q" data-q data-answer="0"><div class="qtext">2. Qaysi hodisa = sichqoncha bosish?</div>
     <label class="opt"><input type="radio" name="q2"> "click"</label>
     <label class="opt"><input type="radio" name="q2"> "press"</label>
     <label class="opt"><input type="radio" name="q2"> "touch"</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">3. Bosish ishlovchisi ichidagi kod qachon ishlaydi?</div>
+    <label class="opt"><input type="radio" name="q3"> Sahifa yuklanishida darrov</label>
+    <label class="opt"><input type="radio" name="q3"> Har soniyada</label>
+    <label class="opt"><input type="radio" name="q3"> Faqat foydalanuvchi bosganda</label></div>
   <button class="quiz-btn" data-check>Javoblarni tekshir</button>
   <div class="quiz-result" data-result></div>
 </div>`
