@@ -658,60 +658,200 @@ html:{
 ru:()=>`
 <div class="kicker">Урок 6</div>
 <h1>Условия — if / else</h1>
-<p class="lead">Условия позволяют программе <b>принимать решения</b>: «если… то… иначе…».</p>
-<pre>${K}if${_} (условие) {
-  ${C}// если ПРАВДА${_}
-} ${K}else${_} {
-  ${C}// если ЛОЖЬ${_}
+<p class="lead">Условие — это способ научить программу <b>принимать решения</b>. Как человек утром: «<b>если</b> идёт дождь — <b>то</b> беру зонт, <b>иначе</b> — не беру».</p>
+
+<h2>Зачем это вообще нужно?</h2>
+<p>До этого урока наш код выполнялся всегда одинаково — сверху вниз, строчка за строчкой, без вариантов. Но настоящие программы должны вести себя <b>по-разному</b> в разных ситуациях:</p>
+<ul>
+  <li>Ввёл <b>правильный</b> пароль → пускаем в аккаунт. <b>Неправильный</b> → показываем ошибку.</li>
+  <li>Товара нет на складе → кнопка «Купить» становится серой.</li>
+  <li>Возраст 18+ → показываем контент, иначе → «доступ запрещён».</li>
+</ul>
+<p>За все эти «развилки» отвечает конструкция <code class="inline">if</code> (с англ. «<b>если</b>»).</p>
+
+<h2>Как устроен <code class="inline">if</code> — разбираем по кусочкам</h2>
+<pre>${K}if${_} (age >= ${N}18${_}) {
+  ${F}console${_}.log(${S}"Проходи"${_});
 }</pre>
-${play(`let age = 20;\nif (age >= 18) {\n  console.log("Доступ разрешён ✅");\n} else {\n  console.log("Доступ запрещён ❌");\n}`)}
-<p>Поменяй <code class="inline">age</code> на 15 и запусти снова.</p>
-<h2>Несколько условий: else if</h2>
-${play(`let score = 75;\nif (score >= 90) {\n  console.log("Оценка: 5");\n} else if (score >= 70) {\n  console.log("Оценка: 4");\n} else if (score >= 50) {\n  console.log("Оценка: 3");\n} else {\n  console.log("Оценка: 2");\n}`)}
-<h2>Проверка пароля</h2>
-${play(`let password = "12345";\nif (password.length >= 8) {\n  console.log("Надёжный пароль 🔒");\n} else {\n  console.log("Пароль слишком короткий ⚠");\n}`)}
-<h2>Тернарный оператор</h2>
-${play(`let age = 16;\nlet status = age >= 18 ? "взрослый" : "ребёнок";\nconsole.log("Статус:", status);`)}
+<p>Читаем медленно, каждую часть отдельно:</p>
+<table>
+  <tr><th>Часть</th><th>Как называется</th><th>Что делает</th></tr>
+  <tr><td><code>if</code></td><td>ключевое слово</td><td>говорит «сейчас будет проверка»</td></tr>
+  <tr><td><code>( age >= 18 )</code></td><td><b>условие</b> (в круглых скобках)</td><td>вопрос, на который есть ответ ДА или НЕТ</td></tr>
+  <tr><td><code>{ ... }</code></td><td><b>тело</b> (в фигурных скобках)</td><td>код внутри сработает <b>только если</b> ответ ДА</td></tr>
+</table>
+
+<h2>Самое важное: что такое «условие»</h2>
+<p>Условие — это выражение, которое всегда превращается в одно из двух значений: <code class="inline">true</code> (правда, ДА) или <code class="inline">false</code> (ложь, НЕТ). Помнишь операторы сравнения из прошлого урока? Именно они дают true / false. Запусти и посмотри:</p>
+${play(`console.log(18 >= 18);  // true  → ДА\nconsole.log(15 >= 18);  // false → НЕТ\nconsole.log(10 === 10); // true\nconsole.log(5 > 100);   // false`)}
+<div class="note"><b>💡 Золотое правило if</b>Компьютер вычисляет условие в скобках. Получилось <code class="inline">true</code> → заходит в фигурные скобки и выполняет код. Получилось <code class="inline">false</code> → <b>полностью пропускает</b> эти скобки и идёт дальше.</div>
+
+<h2>Шаг 1 — только <code class="inline">if</code> (без else)</h2>
+<p>Самый простой случай: сделать что-то <b>только</b> если условие верно. Если нет — просто ничего не происходит.</p>
+${play(`let temperature = 35;\n\nif (temperature > 30) {\n  console.log("Жарко! Включаю кондиционер ❄️");\n}\n\nconsole.log("Программа работает дальше...");`)}
+<p><b>Эксперимент:</b> поменяй <code class="inline">temperature</code> на <code class="inline">20</code> и запусти. Первая строчка <b>не</b> появится — условие стало <code class="inline">false</code>, и компьютер пропустил фигурные скобки. А вот «Программа работает дальше» появится в любом случае, потому что она вне <code class="inline">if</code>.</p>
+
+<h2>Шаг 2 — <code class="inline">if</code> + <code class="inline">else</code> («иначе»)</h2>
+<p><code class="inline">else</code> — это запасной вариант. Он срабатывает, когда условие в <code class="inline">if</code> оказалось <code class="inline">false</code>. Из двух блоков выполнится <b>ровно один</b> — всегда.</p>
+${play(`let age = 20;\n\nif (age >= 18) {\n  console.log("Проходи ✅");\n} else {\n  console.log("Тебе ещё рано ❌");\n}`)}
+<h3>🔍 Как компьютер читает этот код, по шагам:</h3>
+<ol>
+  <li>Создаёт переменную <code class="inline">age</code> со значением <code class="inline">20</code>.</li>
+  <li>Доходит до <code class="inline">if</code> и считает условие: <code class="inline">20 >= 18</code> → это <code class="inline">true</code>.</li>
+  <li>Условие ДА → выполняет <b>первый</b> блок: печатает «Проходи ✅».</li>
+  <li>Блок <code class="inline">else</code> при этом полностью <b>пропускается</b>.</li>
+</ol>
+<p><b>Эксперимент:</b> поставь <code class="inline">age = 15</code>. Теперь <code class="inline">15 >= 18</code> → <code class="inline">false</code>, и выполнится блок <code class="inline">else</code>: «Тебе ещё рано ❌».</p>
+
+<h2>Шаг 3 — много вариантов через <code class="inline">else if</code></h2>
+<p>Когда вариантов больше двух, добавляют <code class="inline">else if</code> («а если…»). Компьютер проверяет условия <b>сверху вниз</b> и останавливается на <b>первом</b>, которое оказалось <code class="inline">true</code>. Остальные даже не смотрит.</p>
+${play(`let score = 75;\n\nif (score >= 90) {\n  console.log("Отлично! Оценка 5");\n} else if (score >= 70) {\n  console.log("Хорошо! Оценка 4");\n} else if (score >= 50) {\n  console.log("Нормально, оценка 3");\n} else {\n  console.log("Нужно подучить, оценка 2");\n}`)}
+<h3>🔍 Разбор для <code class="inline">score = 75</code>:</h3>
+<table>
+  <tr><th>Проверка</th><th>Результат</th><th>Что делает компьютер</th></tr>
+  <tr><td><code>75 >= 90</code></td><td>false</td><td>пропускает, идёт дальше</td></tr>
+  <tr><td><code>75 >= 70</code></td><td>true ✅</td><td>печатает «Оценка 4» и <b>выходит</b></td></tr>
+  <tr><td><code>75 >= 50</code></td><td>—</td><td>уже не проверяется</td></tr>
+  <tr><td><code>else</code></td><td>—</td><td>уже не проверяется</td></tr>
+</table>
+<div class="tip"><b>Важный момент</b>Порядок условий имеет значение! Всегда пиши от самого строгого к самому мягкому (сначала <code class="inline">>= 90</code>, потом <code class="inline">>= 70</code> и т.д.).</p></div>
+
+<h2>Несколько условий сразу: «И» / «ИЛИ»</h2>
+<p>Иногда для решения нужно проверить <b>сразу два</b> условия. Тут помогают <code class="inline">&&</code> (И — нужны оба) и <code class="inline">||</code> (ИЛИ — хватит одного):</p>
+${play(`let age = 25;\nlet hasTicket = true;\n\nif (age >= 18 && hasTicket) {\n  console.log("Пропускаем на фильм 18+ 🎬");\n} else {\n  console.log("Вход запрещён");\n}`)}
+<p>Здесь пропустят, только если <b>и</b> возраст 18+, <b>и</b> есть билет. Убери билет (<code class="inline">hasTicket = false</code>) — и уже не пустят.</p>
+
+<h2>⚠ Три ошибки, на которых спотыкаются все новички</h2>
+<div class="compare">
+  <div class="bad"><h5>✗ Один = вместо сравнения</h5><pre>${K}if${_} (age = ${N}18${_}) { }</pre><p style="font-size:13px;color:var(--muted);margin:6px 0 0">Один <code class="inline">=</code> это «присвоить». Условие сломается.</p></div>
+  <div class="good"><h5>✓ Три = для сравнения</h5><pre>${K}if${_} (age === ${N}18${_}) { }</pre><p style="font-size:13px;color:var(--muted);margin:6px 0 0">Три <code class="inline">===</code> это «сравнить». Правильно.</p></div>
+</div>
+<div class="compare">
+  <div class="bad"><h5>✗ Точка с запятой после if</h5><pre>${K}if${_} (x > ${N}5${_}); { }</pre><p style="font-size:13px;color:var(--muted);margin:6px 0 0">Из-за <code class="inline">;</code> блок оторвётся от условия.</p></div>
+  <div class="good"><h5>✓ Без ; перед скобкой</h5><pre>${K}if${_} (x > ${N}5${_}) { }</pre></div>
+</div>
+
+<h2>Короткая запись — тернарный оператор</h2>
+<p>Когда нужно просто выбрать одно из двух значений, есть сокращённая форма. Читается как вопрос: <code class="inline">условие ? значение_если_да : значение_если_нет</code></p>
+${play(`let age = 16;\n\nlet status = age >= 18 ? "взрослый" : "ребёнок";\nconsole.log("Ты — " + status);`)}
+<p>Это ровно то же самое, что <code class="inline">if/else</code>, но в одну строчку. Удобно для простых случаев.</p>
+
+<h2>🎯 Попробуй сам</h2>
+<p>Ниже — проверка пароля. Поменяй значение <code class="inline">password</code> и посмотри, как меняется результат. <code class="inline">.length</code> — это длина строки (сколько символов).</p>
+${play(`let password = "12345";\n\nif (password.length >= 8) {\n  console.log("Надёжный пароль 🔒");\n} else {\n  console.log("Пароль короткий, нужно 8+ символов ⚠");\n}`)}
+
 <div class="quiz" data-quiz>
   <h3>✅ Мини-тест</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. Когда выполнится <code class="inline">else</code>?</div>
-    <label class="opt"><input type="radio" name="q1"> Когда условие верно</label>
-    <label class="opt"><input type="radio" name="q1"> Когда условие ложно</label>
-    <label class="opt"><input type="radio" name="q1"> Всегда</label></div>
-  <div class="q" data-q data-answer="2"><div class="qtext">2. Что выведет при <code class="inline">score = 60</code>?</div>
-    <label class="opt"><input type="radio" name="q2"> Оценка: 5</label>
-    <label class="opt"><input type="radio" name="q2"> Оценка: 4</label>
-    <label class="opt"><input type="radio" name="q2"> Оценка: 3</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. В какое значение всегда превращается условие в скобках <code class="inline">if( )</code>?</div>
+    <label class="opt"><input type="radio" name="q1"> В число</label>
+    <label class="opt"><input type="radio" name="q1"> В true или false</label>
+    <label class="opt"><input type="radio" name="q1"> В текст</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Когда выполнится блок <code class="inline">else</code>?</div>
+    <label class="opt"><input type="radio" name="q2"> Когда условие в if верно</label>
+    <label class="opt"><input type="radio" name="q2"> Когда условие в if ложно (false)</label>
+    <label class="opt"><input type="radio" name="q2"> Всегда, вместе с if</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">3. Что выведет код с оценками при <code class="inline">score = 60</code>?</div>
+    <label class="opt"><input type="radio" name="q3"> Оценка 5</label>
+    <label class="opt"><input type="radio" name="q3"> Оценка 4</label>
+    <label class="opt"><input type="radio" name="q3"> Оценка 3</label></div>
   <button class="quiz-btn" data-check>Проверить ответы</button>
   <div class="quiz-result" data-result></div>
 </div>`,
 uz:()=>`
 <div class="kicker">6-dars</div>
 <h1>Shartlar — if / else</h1>
-<p class="lead">Shartlar dasturga <b>qaror qabul qilish</b> imkonini beradi: «agar… bo‘lsa… aks holda…».</p>
-<pre>${K}if${_} (shart) {
-  ${C}// agar ROST bo‘lsa${_}
-} ${K}else${_} {
-  ${C}// agar YOLG‘ON bo‘lsa${_}
+<p class="lead">Shart — bu dasturni <b>qaror qabul qilishga</b> o‘rgatish usuli. Xuddi odam ertalab: «<b>agar</b> yomg‘ir yog‘sa — <b>u holda</b> soyabon olaman, <b>aks holda</b> — olmayman».</p>
+
+<h2>Bu nima uchun kerak?</h2>
+<p>Shu darsgacha kodimiz doim bir xil bajarildi — yuqoridan pastga, qatorma-qator. Lekin haqiqiy dasturlar turli holatlarda <b>turlicha</b> ishlashi kerak:</p>
+<ul>
+  <li><b>To‘g‘ri</b> parol kiritildi → akkauntga kiritamiz. <b>Noto‘g‘ri</b> → xato ko‘rsatamiz.</li>
+  <li>Mahsulot omborda yo‘q → «Sotib olish» tugmasi kulrang bo‘ladi.</li>
+  <li>Yosh 18+ → kontentni ko‘rsatamiz, aks holda → «ruxsat yo‘q».</li>
+</ul>
+<p>Bu «ayrilishlar»ga <code class="inline">if</code> («<b>agar</b>») javob beradi.</p>
+
+<h2><code class="inline">if</code> qanday tuzilgan — qismlarga ajratamiz</h2>
+<pre>${K}if${_} (age >= ${N}18${_}) {
+  ${F}console${_}.log(${S}"O‘t"${_});
 }</pre>
-${play(`let age = 20;\nif (age >= 18) {\n  console.log("Ruxsat berildi ✅");\n} else {\n  console.log("Ruxsat yo‘q ❌");\n}`)}
-<p><code class="inline">age</code> ni 15 ga o‘zgartirib qaytadan bos.</p>
-<h2>Bir nechta shart: else if</h2>
-${play(`let score = 75;\nif (score >= 90) {\n  console.log("Baho: 5");\n} else if (score >= 70) {\n  console.log("Baho: 4");\n} else if (score >= 50) {\n  console.log("Baho: 3");\n} else {\n  console.log("Baho: 2");\n}`)}
-<h2>Parolni tekshirish</h2>
-${play(`let password = "12345";\nif (password.length >= 8) {\n  console.log("Ishonchli parol 🔒");\n} else {\n  console.log("Parol juda qisqa ⚠");\n}`)}
-<h2>Ternar operator</h2>
-${play(`let age = 16;\nlet status = age >= 18 ? "katta" : "bola";\nconsole.log("Holat:", status);`)}
+<table>
+  <tr><th>Qism</th><th>Nomi</th><th>Vazifasi</th></tr>
+  <tr><td><code>if</code></td><td>kalit so‘z</td><td>«hozir tekshiruv bo‘ladi» deydi</td></tr>
+  <tr><td><code>( age >= 18 )</code></td><td><b>shart</b> (qavs ichida)</td><td>HA yoki YO‘Q javobli savol</td></tr>
+  <tr><td><code>{ ... }</code></td><td><b>tana</b> (jingalak qavsda)</td><td>ichidagi kod <b>faqat</b> javob HA bo‘lsa ishlaydi</td></tr>
+</table>
+
+<h2>Eng muhimi: «shart» nima</h2>
+<p>Shart — bu har doim ikkita qiymatdan biriga aylanadigan ifoda: <code class="inline">true</code> (rost, HA) yoki <code class="inline">false</code> (yolg‘on, YO‘Q). Taqqoslash operatorlari aynan true / false beradi. Ishga tushir:</p>
+${play(`console.log(18 >= 18);  // true  → HA\nconsole.log(15 >= 18);  // false → YO‘Q\nconsole.log(10 === 10); // true\nconsole.log(5 > 100);   // false`)}
+<div class="note"><b>💡 if oltin qoidasi</b>Kompyuter qavsdagi shartni hisoblaydi. <code class="inline">true</code> chiqsa → jingalak qavsga kirib kodni bajaradi. <code class="inline">false</code> chiqsa → bu qavslarni <b>butunlay tashlab</b> o‘tadi.</div>
+
+<h2>1-qadam — faqat <code class="inline">if</code> (else siz)</h2>
+<p>Eng oddiy holat: biror ishni <b>faqat</b> shart rost bo‘lsa qilish. Aks holda hech narsa bo‘lmaydi.</p>
+${play(`let temperature = 35;\n\nif (temperature > 30) {\n  console.log("Issiq! Konditsioner yoqaman ❄️");\n}\n\nconsole.log("Dastur davom etyapti...");`)}
+<p><b>Tajriba:</b> <code class="inline">temperature</code> ni <code class="inline">20</code> ga o‘zgartir. Birinchi qator chiqmaydi — shart <code class="inline">false</code> bo‘ldi. Lekin «Dastur davom etyapti» baribir chiqadi, chunki u <code class="inline">if</code> dan tashqarida.</p>
+
+<h2>2-qadam — <code class="inline">if</code> + <code class="inline">else</code> («aks holda»)</h2>
+<p><code class="inline">else</code> — zaxira variant. U <code class="inline">if</code> dagi shart <code class="inline">false</code> bo‘lganda ishlaydi. Ikki blokdan <b>aniq bittasi</b> doim bajariladi.</p>
+${play(`let age = 20;\n\nif (age >= 18) {\n  console.log("O‘t ✅");\n} else {\n  console.log("Hali erta ❌");\n}`)}
+<h3>🔍 Kompyuter bu kodni qanday o‘qiydi:</h3>
+<ol>
+  <li><code class="inline">age</code> o‘zgaruvchisini <code class="inline">20</code> qiymat bilan yaratadi.</li>
+  <li><code class="inline">if</code> ga yetadi va shartni hisoblaydi: <code class="inline">20 >= 18</code> → <code class="inline">true</code>.</li>
+  <li>Shart HA → <b>birinchi</b> blokni bajaradi: «O‘t ✅».</li>
+  <li><code class="inline">else</code> bloki butunlay <b>tashlab o‘tiladi</b>.</li>
+</ol>
+<p><b>Tajriba:</b> <code class="inline">age = 15</code> qo‘y. Endi <code class="inline">15 >= 18</code> → <code class="inline">false</code>, va <code class="inline">else</code> bajariladi: «Hali erta ❌».</p>
+
+<h2>3-qadam — ko‘p variant: <code class="inline">else if</code></h2>
+<p>Variant ikkitadan ko‘p bo‘lsa, <code class="inline">else if</code> («agar esa…») qo‘shiladi. Kompyuter shartlarni <b>yuqoridan pastga</b> tekshiradi va <b>birinchi</b> <code class="inline">true</code> da to‘xtaydi. Qolganlariga qaramaydi.</p>
+${play(`let score = 75;\n\nif (score >= 90) {\n  console.log("Zo‘r! Baho 5");\n} else if (score >= 70) {\n  console.log("Yaxshi! Baho 4");\n} else if (score >= 50) {\n  console.log("O‘rtacha, baho 3");\n} else {\n  console.log("O‘qish kerak, baho 2");\n}`)}
+<h3>🔍 <code class="inline">score = 75</code> uchun tahlil:</h3>
+<table>
+  <tr><th>Tekshiruv</th><th>Natija</th><th>Kompyuter nima qiladi</th></tr>
+  <tr><td><code>75 >= 90</code></td><td>false</td><td>tashlab o‘tadi</td></tr>
+  <tr><td><code>75 >= 70</code></td><td>true ✅</td><td>«Baho 4» chiqaradi va <b>chiqadi</b></td></tr>
+  <tr><td><code>75 >= 50</code></td><td>—</td><td>tekshirilmaydi</td></tr>
+</table>
+<div class="tip"><b>Muhim</b>Shartlar tartibi muhim! Doim eng qattiqdan eng yumshoqqa yoz (avval <code class="inline">>= 90</code>, keyin <code class="inline">>= 70</code>).</div>
+
+<h2>Bir vaqtda ikki shart: «VA» / «YOKI»</h2>
+<p><code class="inline">&&</code> (VA — ikkalasi kerak) va <code class="inline">||</code> (YOKI — bittasi yetadi):</p>
+${play(`let age = 25;\nlet hasTicket = true;\n\nif (age >= 18 && hasTicket) {\n  console.log("18+ filmga o‘tkazamiz 🎬");\n} else {\n  console.log("Kirish taqiqlangan");\n}`)}
+<p>Bu yerda faqat yosh 18+ <b>va</b> chipta bor bo‘lsa o‘tkazadi.</p>
+
+<h2>⚠ Barcha yangi boshlovchilar qiladigan 3 xato</h2>
+<div class="compare">
+  <div class="bad"><h5>✗ Taqqoslashda bitta =</h5><pre>${K}if${_} (age = ${N}18${_}) { }</pre></div>
+  <div class="good"><h5>✓ Uchta = taqqoslash</h5><pre>${K}if${_} (age === ${N}18${_}) { }</pre></div>
+</div>
+<div class="compare">
+  <div class="bad"><h5>✗ if dan keyin ;</h5><pre>${K}if${_} (x > ${N}5${_}); { }</pre></div>
+  <div class="good"><h5>✓ Qavsdan oldin ; yo‘q</h5><pre>${K}if${_} (x > ${N}5${_}) { }</pre></div>
+</div>
+
+<h2>Qisqa yozuv — ternar operator</h2>
+<p>Ikkitadan bittasini tanlash kerak bo‘lsa: <code class="inline">shart ? ha_qiymat : yoq_qiymat</code></p>
+${play(`let age = 16;\n\nlet status = age >= 18 ? "katta" : "bola";\nconsole.log("Sen — " + status);`)}
+
+<h2>🎯 O‘zing sinab ko‘r</h2>
+${play(`let password = "12345";\n\nif (password.length >= 8) {\n  console.log("Ishonchli parol 🔒");\n} else {\n  console.log("Parol qisqa, 8+ belgi kerak ⚠");\n}`)}
+
 <div class="quiz" data-quiz>
   <h3>✅ Mini-test</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. <code class="inline">else</code> qachon bajariladi?</div>
-    <label class="opt"><input type="radio" name="q1"> Shart to‘g‘ri bo‘lsa</label>
-    <label class="opt"><input type="radio" name="q1"> Shart yolg‘on bo‘lsa</label>
-    <label class="opt"><input type="radio" name="q1"> Doim</label></div>
-  <div class="q" data-q data-answer="2"><div class="qtext">2. <code class="inline">score = 60</code> da nima chiqadi?</div>
-    <label class="opt"><input type="radio" name="q2"> Baho: 5</label>
-    <label class="opt"><input type="radio" name="q2"> Baho: 4</label>
-    <label class="opt"><input type="radio" name="q2"> Baho: 3</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. <code class="inline">if( )</code> qavsidagi shart nimaga aylanadi?</div>
+    <label class="opt"><input type="radio" name="q1"> Songa</label>
+    <label class="opt"><input type="radio" name="q1"> true yoki false ga</label>
+    <label class="opt"><input type="radio" name="q1"> Matnga</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. <code class="inline">else</code> qachon bajariladi?</div>
+    <label class="opt"><input type="radio" name="q2"> if dagi shart rost bo‘lsa</label>
+    <label class="opt"><input type="radio" name="q2"> if dagi shart yolg‘on (false) bo‘lsa</label>
+    <label class="opt"><input type="radio" name="q2"> Doim, if bilan birga</label></div>
+  <div class="q" data-q data-answer="2"><div class="qtext">3. Baholar kodi <code class="inline">score = 60</code> da nima chiqaradi?</div>
+    <label class="opt"><input type="radio" name="q3"> Baho 5</label>
+    <label class="opt"><input type="radio" name="q3"> Baho 4</label>
+    <label class="opt"><input type="radio" name="q3"> Baho 3</label></div>
   <button class="quiz-btn" data-check>Javoblarni tekshir</button>
   <div class="quiz-result" data-result></div>
 </div>`
@@ -727,56 +867,165 @@ html:{
 ru:()=>`
 <div class="kicker">Урок 7</div>
 <h1>Циклы — повторяем действия</h1>
-<p class="lead">Цикл повторяет код много раз без копирования.</p>
-<h2>Цикл for</h2>
-<pre>${K}for${_} (${K}let${_} i = ${N}1${_}; i &lt;= ${N}5${_}; i++) { }</pre>
-<ul><li><code class="inline">let i = 1</code> — старт</li><li><code class="inline">i &lt;= 5</code> — условие (пока верно)</li><li><code class="inline">i++</code> — шаг (+1)</li></ul>
+<p class="lead">Цикл — это способ повторить один и тот же код много раз, <b>не копируя его</b>. Как на тренировке: «отжаться 10 раз» — ты не пишешь 10 разных команд, ты повторяешь одно действие 10 раз.</p>
+
+<h2>Проблема, которую решает цикл</h2>
+<p>Представь, что нужно поздороваться 5 раз. Без цикла пришлось бы писать так:</p>
+<pre>${F}console${_}.log(${S}"Привет 1"${_});
+${F}console${_}.log(${S}"Привет 2"${_});
+${F}console${_}.log(${S}"Привет 3"${_});
+${F}console${_}.log(${S}"Привет 4"${_});
+${F}console${_}.log(${S}"Привет 5"${_});  ${C}// а если нужно 1000 раз?!${_}</pre>
+<p>Это долго и глупо. Цикл делает то же самое в 3 строчки — и хоть 1000 раз.</p>
+
+<h2>Цикл <code class="inline">for</code> — разбираем по частям</h2>
+<p>У цикла <code class="inline">for</code> в круглых скобках <b>три части</b>, разделённые точкой с запятой <code class="inline">;</code>. Это как настройки для повторения:</p>
+<pre>${K}for${_} (${K}let${_} i = ${N}1${_};  i &lt;= ${N}5${_};  i++) {
+  ${C}// этот код повторится${_}
+}</pre>
+<table>
+  <tr><th>Часть</th><th>Название</th><th>Что делает</th></tr>
+  <tr><td><code>let i = 1</code></td><td>старт</td><td>создаём счётчик <code class="inline">i</code>, начинаем с 1. Выполняется <b>один раз</b> в самом начале</td></tr>
+  <tr><td><code>i &lt;= 5</code></td><td>условие</td><td>проверяется <b>перед каждым</b> повтором. Пока <code class="inline">true</code> — цикл работает. Стал <code class="inline">false</code> — стоп</td></tr>
+  <tr><td><code>i++</code></td><td>шаг</td><td>после каждого повтора увеличивает <code class="inline">i</code> на 1</td></tr>
+</table>
+<div class="note"><b>💡 Что такое <code class="inline">i</code>?</b>Это обычная переменная-счётчик (от англ. index). Она хранит номер текущего повтора. Имя <code class="inline">i</code> — просто традиция, можно назвать как угодно.</div>
+
+<h2>Смотрим цикл в действии</h2>
 ${play(`for (let i = 1; i <= 5; i++) {\n  console.log("Повтор номер " + i);\n}`)}
-<h2>Сумма от 1 до 10</h2>
-${play(`let sum = 0;\nfor (let i = 1; i <= 10; i++) {\n  sum = sum + i;\n}\nconsole.log("Сумма =", sum); // 55`)}
-<h2>Таблица умножения</h2>
-${play(`let n = 7;\nfor (let i = 1; i <= 9; i++) {\n  console.log(n + " x " + i + " = " + (n * i));\n}`)}
-<h2>Цикл while</h2>
-${play(`let fuel = 5;\nwhile (fuel > 0) {\n  console.log("Едем... топлива: " + fuel);\n  fuel--;\n}\nconsole.log("Топливо кончилось 🛑");`)}
-<div class="warn"><b>⚠ Бесконечный цикл</b>Если забыть <code class="inline">i++</code>, цикл зависнет навсегда. Всегда меняй счётчик!</div>
+<h3>🔍 Таблица прогона — как компьютер крутит этот цикл:</h3>
+<table>
+  <tr><th>Шаг</th><th>Чему равно <code>i</code></th><th>Проверка <code>i &lt;= 5</code></th><th>Что печатает</th><th>Потом <code>i++</code></th></tr>
+  <tr><td>1</td><td>1</td><td>1 &lt;= 5 → true ✅</td><td>Повтор номер 1</td><td>i станет 2</td></tr>
+  <tr><td>2</td><td>2</td><td>2 &lt;= 5 → true ✅</td><td>Повтор номер 2</td><td>i станет 3</td></tr>
+  <tr><td>3</td><td>3</td><td>3 &lt;= 5 → true ✅</td><td>Повтор номер 3</td><td>i станет 4</td></tr>
+  <tr><td>4</td><td>4</td><td>4 &lt;= 5 → true ✅</td><td>Повтор номер 4</td><td>i станет 5</td></tr>
+  <tr><td>5</td><td>5</td><td>5 &lt;= 5 → true ✅</td><td>Повтор номер 5</td><td>i станет 6</td></tr>
+  <tr><td>6</td><td>6</td><td>6 &lt;= 5 → <b>false</b> ❌</td><td>цикл <b>останавливается</b></td><td>—</td></tr>
+</table>
+<p>Видишь? Как только условие стало <code class="inline">false</code>, цикл заканчивается. Поэтому повторов ровно 5.</p>
+
+<h2>Меняем настройки цикла</h2>
+<p>Три части можно менять как хочешь. Попробуй разные варианты — запусти и посмотри:</p>
+${play(`// Считаем от 0 до 4 (пять раз, но с нуля)\nfor (let i = 0; i < 5; i++) {\n  console.log("i =", i);\n}`)}
+${play(`// Обратный отсчёт: от 5 до 1\nfor (let i = 5; i >= 1; i--) {\n  console.log(i);\n}\nconsole.log("Поехали! 🚀");`)}
+<p>Здесь <code class="inline">i--</code> — уменьшает счётчик на 1 (наоборот к <code class="inline">i++</code>).</p>
+
+<h2>Зачем циклы на практике — копим сумму</h2>
+<p>Очень частая задача: сложить числа от 1 до 10. Заводим переменную <code class="inline">sum</code> и на каждом шаге добавляем к ней <code class="inline">i</code>:</p>
+${play(`let sum = 0;\n\nfor (let i = 1; i <= 10; i++) {\n  sum = sum + i;   // добавляем текущее число\n}\n\nconsole.log("Сумма от 1 до 10 =", sum); // 55`)}
+<p><code class="inline">sum = sum + i</code> читается так: «новое значение sum = старое sum плюс i». Шаг за шагом: 0→1→3→6→10→15…→55.</p>
+
+<h2>Таблица умножения — цикл экономит время</h2>
+${play(`let n = 7;\n\nfor (let i = 1; i <= 9; i++) {\n  console.log(n + " x " + i + " = " + (n * i));\n}`)}
+<p>Поменяй <code class="inline">n = 7</code> на любое число — получишь таблицу умножения для него.</p>
+
+<h2>Цикл <code class="inline">while</code> — «пока»</h2>
+<p><code class="inline">while</code> проще: он повторяет код, <b>пока</b> условие верно. Его берут, когда заранее <b>не знаешь</b>, сколько будет повторов.</p>
+${play(`let fuel = 5;\n\nwhile (fuel > 0) {\n  console.log("Едем... топлива: " + fuel);\n  fuel--;   // тратим топливо\n}\n\nconsole.log("Топливо кончилось 🛑");`)}
+<p>Здесь важно, чтобы внутри цикла что-то <b>меняло</b> условие (<code class="inline">fuel--</code>), иначе оно никогда не станет false.</p>
+
+<div class="warn"><b>⚠ Бесконечный цикл — главная опасность</b>Если условие <b>никогда</b> не станет <code class="inline">false</code> (например, забыл <code class="inline">i++</code> или <code class="inline">fuel--</code>), цикл будет крутиться вечно и браузер зависнет. Всегда убеждайся, что счётчик двигается к завершению!</div>
+
+<h2>🎯 Попробуй сам</h2>
+<p>Выведи только чётные числа от 2 до 10. Подсказка уже в коде — просто запусти:</p>
+${play(`for (let i = 2; i <= 10; i++) {\n  if (i % 2 === 0) {\n    console.log(i + " — чётное");\n  }\n}`)}
+<p>Заметь: здесь <b>цикл и условие работают вместе</b> — цикл перебирает числа, а <code class="inline">if</code> отбирает нужные. Так строятся настоящие программы.</p>
+
 <div class="quiz" data-quiz>
   <h3>✅ Мини-тест</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. Сколько раз: <code class="inline">for(let i=0;i<3;i++)</code>?</div>
-    <label class="opt"><input type="radio" name="q1"> 2</label>
-    <label class="opt"><input type="radio" name="q1"> 3</label>
-    <label class="opt"><input type="radio" name="q1"> 4</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. Сколько раз выполнится <code class="inline">for(let i=0; i<3; i++)</code>?</div>
+    <label class="opt"><input type="radio" name="q1"> 2 раза</label>
+    <label class="opt"><input type="radio" name="q1"> 3 раза</label>
+    <label class="opt"><input type="radio" name="q1"> 4 раза</label></div>
   <div class="q" data-q data-answer="2"><div class="qtext">2. Что делает <code class="inline">i++</code>?</div>
-    <label class="opt"><input type="radio" name="q2"> Уменьшает на 1</label>
-    <label class="opt"><input type="radio" name="q2"> Умножает на 2</label>
-    <label class="opt"><input type="radio" name="q2"> Увеличивает на 1</label></div>
+    <label class="opt"><input type="radio" name="q2"> Уменьшает i на 1</label>
+    <label class="opt"><input type="radio" name="q2"> Умножает i на 2</label>
+    <label class="opt"><input type="radio" name="q2"> Увеличивает i на 1</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">3. Когда цикл останавливается?</div>
+    <label class="opt"><input type="radio" name="q3"> Когда условие стало false</label>
+    <label class="opt"><input type="radio" name="q3"> Когда условие стало true</label>
+    <label class="opt"><input type="radio" name="q3"> Никогда сам не останавливается</label></div>
   <button class="quiz-btn" data-check>Проверить ответы</button>
   <div class="quiz-result" data-result></div>
 </div>`,
 uz:()=>`
 <div class="kicker">7-dars</div>
 <h1>Sikllar — amallarni takrorlaymiz</h1>
-<p class="lead">Sikl kodni nusxalamasdan ko‘p marta takrorlaydi.</p>
-<h2>for sikli</h2>
-<pre>${K}for${_} (${K}let${_} i = ${N}1${_}; i &lt;= ${N}5${_}; i++) { }</pre>
-<ul><li><code class="inline">let i = 1</code> — boshlanish</li><li><code class="inline">i &lt;= 5</code> — shart (rost ekan)</li><li><code class="inline">i++</code> — qadam (+1)</li></ul>
+<p class="lead">Sikl — bir xil kodni <b>nusxalamasdan</b> ko‘p marta takrorlash usuli. Xuddi mashg‘ulotda: «10 marta yer tayan» — 10 xil buyruq yozmaysan, bitta amalni 10 marta takrorlaysan.</p>
+
+<h2>Sikl hal qiladigan muammo</h2>
+<p>5 marta salom aytish kerak deylik. Siklsiz shunday yozardik:</p>
+<pre>${F}console${_}.log(${S}"Salom 1"${_});
+${F}console${_}.log(${S}"Salom 2"${_});
+${F}console${_}.log(${S}"Salom 3"${_});  ${C}// 1000 marta kerak bo‘lsa-chi?!${_}</pre>
+<p>Bu uzoq va noqulay. Sikl xuddi shuni 3 qatorda qiladi — hatto 1000 marta ham.</p>
+
+<h2><code class="inline">for</code> sikli — qismlarga ajratamiz</h2>
+<p><code class="inline">for</code> qavsida <code class="inline">;</code> bilan ajratilgan <b>uchta qism</b> bor:</p>
+<pre>${K}for${_} (${K}let${_} i = ${N}1${_};  i &lt;= ${N}5${_};  i++) {
+  ${C}// bu kod takrorlanadi${_}
+}</pre>
+<table>
+  <tr><th>Qism</th><th>Nomi</th><th>Vazifasi</th></tr>
+  <tr><td><code>let i = 1</code></td><td>boshlanish</td><td>hisoblagich <code class="inline">i</code> yaratamiz, 1 dan boshlaymiz. <b>Bir marta</b> ishlaydi</td></tr>
+  <tr><td><code>i &lt;= 5</code></td><td>shart</td><td><b>har takrordan oldin</b> tekshiriladi. <code class="inline">true</code> ekan — sikl ishlaydi</td></tr>
+  <tr><td><code>i++</code></td><td>qadam</td><td>har takrordan keyin <code class="inline">i</code> ni 1 ga oshiradi</td></tr>
+</table>
+<div class="note"><b>💡 <code class="inline">i</code> nima?</b>Oddiy hisoblagich-o‘zgaruvchi. Joriy takror raqamini saqlaydi. <code class="inline">i</code> nomi — an’ana, xohlagancha nomlash mumkin.</div>
+
+<h2>Siklni ish paytida ko‘ramiz</h2>
 ${play(`for (let i = 1; i <= 5; i++) {\n  console.log("Takror raqami " + i);\n}`)}
-<h2>1 dan 10 gacha yig‘indi</h2>
-${play(`let sum = 0;\nfor (let i = 1; i <= 10; i++) {\n  sum = sum + i;\n}\nconsole.log("Yig‘indi =", sum); // 55`)}
+<h3>🔍 Prognoz jadvali — kompyuter siklni qanday aylantiradi:</h3>
+<table>
+  <tr><th>Qadam</th><th><code>i</code></th><th><code>i &lt;= 5</code></th><th>Chiqaradi</th><th><code>i++</code></th></tr>
+  <tr><td>1</td><td>1</td><td>true ✅</td><td>Takror raqami 1</td><td>i = 2</td></tr>
+  <tr><td>2</td><td>2</td><td>true ✅</td><td>Takror raqami 2</td><td>i = 3</td></tr>
+  <tr><td>3</td><td>3</td><td>true ✅</td><td>Takror raqami 3</td><td>i = 4</td></tr>
+  <tr><td>4</td><td>4</td><td>true ✅</td><td>Takror raqami 4</td><td>i = 5</td></tr>
+  <tr><td>5</td><td>5</td><td>true ✅</td><td>Takror raqami 5</td><td>i = 6</td></tr>
+  <tr><td>6</td><td>6</td><td><b>false</b> ❌</td><td>sikl <b>to‘xtaydi</b></td><td>—</td></tr>
+</table>
+<p>Ko‘rdingmi? Shart <code class="inline">false</code> bo‘lishi bilan sikl tugaydi. Shuning uchun aynan 5 marta.</p>
+
+<h2>Sikl sozlamalarini o‘zgartiramiz</h2>
+${play(`// 0 dan 4 gacha\nfor (let i = 0; i < 5; i++) {\n  console.log("i =", i);\n}`)}
+${play(`// Teskari sanoq: 5 dan 1 gacha\nfor (let i = 5; i >= 1; i--) {\n  console.log(i);\n}\nconsole.log("Ketdik! 🚀");`)}
+<p><code class="inline">i--</code> — hisoblagichni 1 ga kamaytiradi (<code class="inline">i++</code> ga teskari).</p>
+
+<h2>Amaliyot — yig‘indi to‘playmiz</h2>
+${play(`let sum = 0;\n\nfor (let i = 1; i <= 10; i++) {\n  sum = sum + i;   // joriy sonni qo‘shamiz\n}\n\nconsole.log("1 dan 10 gacha yig‘indi =", sum); // 55`)}
+<p><code class="inline">sum = sum + i</code> shunday o‘qiladi: «yangi sum = eski sum + i».</p>
+
 <h2>Ko‘paytirish jadvali</h2>
-${play(`let n = 7;\nfor (let i = 1; i <= 9; i++) {\n  console.log(n + " x " + i + " = " + (n * i));\n}`)}
-<h2>while sikli</h2>
-${play(`let fuel = 5;\nwhile (fuel > 0) {\n  console.log("Ketyapmiz... yoqilg‘i: " + fuel);\n  fuel--;\n}\nconsole.log("Yoqilg‘i tugadi 🛑");`)}
-<div class="warn"><b>⚠ Cheksiz sikl</b><code class="inline">i++</code> ni unutsang, sikl abadiy ishlaydi. Hisoblagichni doim o‘zgartir!</div>
+${play(`let n = 7;\n\nfor (let i = 1; i <= 9; i++) {\n  console.log(n + " x " + i + " = " + (n * i));\n}`)}
+<p><code class="inline">n = 7</code> ni istalgan songa o‘zgartir.</p>
+
+<h2><code class="inline">while</code> sikli — «to‘xtamaguncha»</h2>
+<p><code class="inline">while</code> kodni shart rost <b>ekan</b> takrorlaydi. Takror sonini oldindan bilmasang ishlatiladi.</p>
+${play(`let fuel = 5;\n\nwhile (fuel > 0) {\n  console.log("Ketyapmiz... yoqilg‘i: " + fuel);\n  fuel--;   // yoqilg‘i sarflanadi\n}\n\nconsole.log("Yoqilg‘i tugadi 🛑");`)}
+<p>Ichida shartni <b>o‘zgartiradigan</b> narsa bo‘lishi shart (<code class="inline">fuel--</code>), aks holda hech qachon false bo‘lmaydi.</p>
+
+<div class="warn"><b>⚠ Cheksiz sikl — asosiy xavf</b>Agar shart <b>hech qachon</b> <code class="inline">false</code> bo‘lmasa (<code class="inline">i++</code> ni unutsang), sikl abadiy aylanadi va brauzer qotib qoladi. Hisoblagich harakatlanishiga ishonch hosil qil!</div>
+
+<h2>🎯 O‘zing sinab ko‘r</h2>
+${play(`for (let i = 2; i <= 10; i++) {\n  if (i % 2 === 0) {\n    console.log(i + " — juft");\n  }\n}`)}
+<p>E’tibor ber: bu yerda <b>sikl va shart birga</b> ishlaydi — sikl sonlarni aylantiradi, <code class="inline">if</code> keraklisini tanlaydi.</p>
+
 <div class="quiz" data-quiz>
   <h3>✅ Mini-test</h3>
-  <div class="q" data-q data-answer="1"><div class="qtext">1. Necha marta: <code class="inline">for(let i=0;i<3;i++)</code>?</div>
-    <label class="opt"><input type="radio" name="q1"> 2</label>
-    <label class="opt"><input type="radio" name="q1"> 3</label>
-    <label class="opt"><input type="radio" name="q1"> 4</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">1. <code class="inline">for(let i=0; i<3; i++)</code> necha marta ishlaydi?</div>
+    <label class="opt"><input type="radio" name="q1"> 2 marta</label>
+    <label class="opt"><input type="radio" name="q1"> 3 marta</label>
+    <label class="opt"><input type="radio" name="q1"> 4 marta</label></div>
   <div class="q" data-q data-answer="2"><div class="qtext">2. <code class="inline">i++</code> nima qiladi?</div>
-    <label class="opt"><input type="radio" name="q2"> 1 ga kamaytiradi</label>
-    <label class="opt"><input type="radio" name="q2"> 2 ga ko‘paytiradi</label>
-    <label class="opt"><input type="radio" name="q2"> 1 ga oshiradi</label></div>
+    <label class="opt"><input type="radio" name="q2"> i ni 1 ga kamaytiradi</label>
+    <label class="opt"><input type="radio" name="q2"> i ni 2 ga ko‘paytiradi</label>
+    <label class="opt"><input type="radio" name="q2"> i ni 1 ga oshiradi</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">3. Sikl qachon to‘xtaydi?</div>
+    <label class="opt"><input type="radio" name="q3"> Shart false bo‘lganda</label>
+    <label class="opt"><input type="radio" name="q3"> Shart true bo‘lganda</label>
+    <label class="opt"><input type="radio" name="q3"> O‘zi hech qachon to‘xtamaydi</label></div>
   <button class="quiz-btn" data-check>Javoblarni tekshir</button>
   <div class="quiz-result" data-result></div>
 </div>`
@@ -792,56 +1041,179 @@ html:{
 ru:()=>`
 <div class="kicker">Урок 8</div>
 <h1>Функции — переиспользуем код</h1>
-<p class="lead">Функция — <b>команда, которую ты создаёшь сам</b>. Пишешь один раз — используешь много.</p>
+<p class="lead">Функция — это <b>своя команда, которую ты создаёшь сам</b>. Представь кофемашину: кладёшь зёрна (вход) → она варит (обработка) → выдаёт кофе (выход). Функция работает так же.</p>
+
+<h2>Зачем нужны функции?</h2>
+<p>Допустим, ты написал 5 строк кода, который считает скидку. Если такой расчёт нужен в 10 местах программы — без функции пришлось бы копировать эти 5 строк 10 раз. А если в расчёте ошибка — исправлять в 10 местах. С функцией ты пишешь код <b>один раз</b>, даёшь ему имя и потом просто вызываешь по имени.</p>
+<p>Функция даёт три больших плюса:</p>
+<ul>
+  <li><b>Не повторяешься</b> — написал один раз, используешь много.</li>
+  <li><b>Порядок</b> — код разбит на понятные кусочки с именами.</li>
+  <li><b>Легко чинить</b> — ошибку правишь в одном месте.</li>
+</ul>
+
+<h2>Два действия: создать функцию и вызвать её</h2>
+<p>С функцией всегда два шага. Не путай их:</p>
+<ol>
+  <li><b>Создание (объявление)</b> — ты описываешь, <i>что</i> функция умеет. Сам по себе этот код ничего не делает — он просто «лежит и ждёт».</li>
+  <li><b>Вызов</b> — ты говоришь «выполни!». Только тогда код внутри срабатывает.</li>
+</ol>
+
+<h2>Создаём первую функцию — по частям</h2>
 <pre>${K}function${_} ${F}greet${_}(name) {
   ${F}console${_}.log(${S}"Привет, "${_} + name);
 }</pre>
-<ul><li><code class="inline">function</code> — «создаю функцию»</li><li><code class="inline">greet</code> — имя</li><li><code class="inline">(name)</code> — параметр</li></ul>
-${play(`function greet(name) {\n  console.log("Привет, " + name + "!");\n}\ngreet("Самандар");\ngreet("Анвар");\ngreet("Малика");`)}
-<h2>return — возврат результата</h2>
-${play(`function add(a, b) {\n  return a + b;\n}\nlet result = add(5, 3);\nconsole.log("5 + 3 =", result);\nconsole.log("10 + 20 =", add(10, 20));`)}
-<h2>Стрелочные функции</h2>
-<pre>${K}const${_} ${F}add${_} = (a, b) ${K}=>${_} a + b;</pre>
-${play(`const square = (x) => x * x;\nconsole.log("Квадрат 5 =", square(5));\nconsole.log("Квадрат 9 =", square(9));`)}
-<div class="note"><b>💡 Параметр vs аргумент</b><b>Параметр</b> — при создании <code class="inline">(name)</code>. <b>Аргумент</b> — при вызове <code class="inline">greet("Анвар")</code>.</div>
+<table>
+  <tr><th>Часть</th><th>Что это</th></tr>
+  <tr><td><code>function</code></td><td>ключевое слово: «я создаю функцию»</td></tr>
+  <tr><td><code>greet</code></td><td>имя функции (придумываешь сам, глаголом)</td></tr>
+  <tr><td><code>(name)</code></td><td><b>параметр</b> — то, что функция получает на вход</td></tr>
+  <tr><td><code>{ ... }</code></td><td><b>тело</b> — что функция делает</td></tr>
+</table>
+<p>А вот <b>вызов</b> — с него и начинается работа:</p>
+${play(`function greet(name) {\n  console.log("Привет, " + name + "!");\n}\n\n// вызываем функцию три раза с разными именами\ngreet("Самандар");\ngreet("Анвар");\ngreet("Малика");`)}
+<p>Одна функция — три приветствия! Обрати внимание: строчки <code class="inline">greet("...")</code> и есть <b>вызовы</b>. Каждый раз внутрь через <code class="inline">name</code> попадает новое имя.</p>
+
+<h2>Параметр и аргумент — в чём разница</h2>
+<p>Эти два слова часто путают. На самом деле всё просто:</p>
+<table>
+  <tr><th>Термин</th><th>Где</th><th>Пример</th></tr>
+  <tr><td><b>Параметр</b></td><td>при <b>создании</b> функции</td><td><code>function greet(name)</code> — <code>name</code> это параметр (пустая «ячейка»)</td></tr>
+  <tr><td><b>Аргумент</b></td><td>при <b>вызове</b> функции</td><td><code>greet("Анвар")</code> — <code>"Анвар"</code> это аргумент (реальное значение)</td></tr>
+</table>
+<div class="note"><b>💡 Простыми словами</b><b>Параметр</b> — это пустая коробка с именем, которую функция ждёт. <b>Аргумент</b> — то, что ты реально кладёшь в эту коробку при вызове.</div>
+
+<h2>Несколько параметров</h2>
+<p>Функция может принимать сколько угодно значений — просто перечисли их через запятую:</p>
+${play(`function greetFull(name, age) {\n  console.log("Меня зовут " + name + ", мне " + age + " лет");\n}\n\ngreetFull("Азиз", 20);\ngreetFull("Дилноза", 17);`)}
+<p>Порядок важен: первый аргумент попадёт в первый параметр, второй — во второй.</p>
+
+<h2>Функция, которая <b>возвращает</b> результат — <code class="inline">return</code></h2>
+<p>До этого функции просто печатали текст. Но чаще функция должна <b>посчитать</b> что-то и <b>отдать</b> результат обратно, чтобы мы могли его сохранить и использовать дальше. Для этого есть <code class="inline">return</code> («вернуть»).</p>
+${play(`function add(a, b) {\n  return a + b;   // возвращаем результат наружу\n}\n\nlet result = add(5, 3);   // ловим результат в переменную\nconsole.log("5 + 3 =", result);\nconsole.log("10 + 20 =", add(10, 20));`)}
+<h3>🔍 Что здесь происходит:</h3>
+<ol>
+  <li>Вызываем <code class="inline">add(5, 3)</code>. Внутри: <code class="inline">a = 5</code>, <code class="inline">b = 3</code>.</li>
+  <li><code class="inline">return 5 + 3</code> → функция «отдаёт» число <code class="inline">8</code> наружу.</li>
+  <li>Это <code class="inline">8</code> попадает в переменную <code class="inline">result</code>.</li>
+  <li>Печатаем <code class="inline">result</code> → 8.</li>
+</ol>
+<div class="warn"><b>⚠ Разница, которую важно понять</b><code class="inline">console.log</code> внутри функции просто <b>показывает</b> текст на экране. А <code class="inline">return</code> <b>отдаёт значение</b>, которое можно сохранить в переменную и посчитать дальше. Это разные вещи!</div>
+<div class="tip"><b>Ещё про return</b>Как только компьютер доходит до <code class="inline">return</code>, функция <b>сразу заканчивается</b> — код после return уже не выполнится.</div>
+
+<h2>Функции + условия вместе</h2>
+<p>Настоящая сила — когда внутри функции есть логика. Вот функция, которая решает, пропускать человека или нет:</p>
+${play(`function canEnter(age) {\n  if (age >= 18) {\n    return "Проходите ✅";\n  } else {\n    return "Вход 18+ ❌";\n  }\n}\n\nconsole.log(canEnter(25));\nconsole.log(canEnter(15));`)}
+
+<h2>Современная короткая запись — стрелочные функции</h2>
+<p>Тот же смысл, но короче. Эту запись ты постоянно встретишь в реальных проектах:</p>
+<pre>${C}// обычная функция${_}
+${K}function${_} ${F}add${_}(a, b) { ${K}return${_} a + b; }
+
+${C}// то же самое стрелочной функцией${_}
+${K}const${_} ${F}add${_} = (a, b) ${K}=>${_} a + b;</pre>
+${play(`const square = (x) => x * x;\n\nconsole.log("Квадрат 5 =", square(5));\nconsole.log("Квадрат 9 =", square(9));`)}
+
 <div class="quiz" data-quiz>
   <h3>✅ Мини-тест</h3>
   <div class="q" data-q data-answer="2"><div class="qtext">1. Что делает <code class="inline">return</code>?</div>
-    <label class="opt"><input type="radio" name="q1"> Печатает текст</label>
-    <label class="opt"><input type="radio" name="q1"> Создаёт переменную</label>
-    <label class="opt"><input type="radio" name="q1"> Возвращает результат</label></div>
-  <div class="q" data-q data-answer="1"><div class="qtext">2. Как вызвать <code class="inline">greet</code> с «Лола»?</div>
+    <label class="opt"><input type="radio" name="q1"> Печатает текст на экран</label>
+    <label class="opt"><input type="radio" name="q1"> Создаёт новую переменную</label>
+    <label class="opt"><input type="radio" name="q1"> Возвращает значение из функции наружу</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. Как <b>вызвать</b> функцию <code class="inline">greet</code> с именем «Лола»?</div>
     <label class="opt"><input type="radio" name="q2"> greet = "Лола"</label>
     <label class="opt"><input type="radio" name="q2"> greet("Лола")</label>
     <label class="opt"><input type="radio" name="q2"> function greet("Лола")</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">3. В <code class="inline">greetFull("Азиз", 20)</code> что такое «Азиз»?</div>
+    <label class="opt"><input type="radio" name="q3"> Аргумент (значение при вызове)</label>
+    <label class="opt"><input type="radio" name="q3"> Параметр</label>
+    <label class="opt"><input type="radio" name="q3"> Имя функции</label></div>
   <button class="quiz-btn" data-check>Проверить ответы</button>
   <div class="quiz-result" data-result></div>
 </div>`,
 uz:()=>`
 <div class="kicker">8-dars</div>
 <h1>Funksiyalar — kodni qayta ishlatamiz</h1>
-<p class="lead">Funksiya — <b>o‘zing yaratadigan buyruq</b>. Bir marta yozasan — ko‘p marta ishlatasan.</p>
+<p class="lead">Funksiya — bu <b>o‘zing yaratadigan buyruq</b>. Kofe mashinasini tasavvur qil: don solasan (kirish) → u qaynatadi (ishlov) → kofe beradi (chiqish). Funksiya ham shunday ishlaydi.</p>
+
+<h2>Funksiyalar nima uchun kerak?</h2>
+<p>Chegirmani hisoblaydigan 5 qatorli kod yozding deylik. Agar u 10 joyda kerak bo‘lsa — funksiyasiz bu 5 qatorni 10 marta nusxalash kerak. Xato bo‘lsa — 10 joyda tuzatasan. Funksiya bilan kodni <b>bir marta</b> yozasan, nom berasan va nom orqali chaqirasan.</p>
+<ul>
+  <li><b>Takrorlanmaysan</b> — bir marta yozib, ko‘p ishlatasan.</li>
+  <li><b>Tartib</b> — kod tushunarli, nomli bo‘laklarga bo‘linadi.</li>
+  <li><b>Tuzatish oson</b> — xatoni bitta joyda tuzatasan.</li>
+</ul>
+
+<h2>Ikki amal: funksiyani yaratish va chaqirish</h2>
+<ol>
+  <li><b>Yaratish (e’lon)</b> — funksiya <i>nima</i> qilishini yozasan. O‘zi hech narsa qilmaydi — «yotib kutadi».</li>
+  <li><b>Chaqirish</b> — «bajar!» deysan. Faqat shundagina ichidagi kod ishlaydi.</li>
+</ol>
+
+<h2>Birinchi funksiyani yaratamiz — qismlarga ajratamiz</h2>
 <pre>${K}function${_} ${F}greet${_}(name) {
   ${F}console${_}.log(${S}"Salom, "${_} + name);
 }</pre>
-<ul><li><code class="inline">function</code> — «funksiya yarataman»</li><li><code class="inline">greet</code> — nom</li><li><code class="inline">(name)</code> — parametr</li></ul>
-${play(`function greet(name) {\n  console.log("Salom, " + name + "!");\n}\ngreet("Samandar");\ngreet("Anvar");\ngreet("Malika");`)}
-<h2>return — natijani qaytarish</h2>
-${play(`function add(a, b) {\n  return a + b;\n}\nlet result = add(5, 3);\nconsole.log("5 + 3 =", result);\nconsole.log("10 + 20 =", add(10, 20));`)}
-<h2>Strelka funksiyalari</h2>
-<pre>${K}const${_} ${F}add${_} = (a, b) ${K}=>${_} a + b;</pre>
-${play(`const square = (x) => x * x;\nconsole.log("5 kvadrati =", square(5));\nconsole.log("9 kvadrati =", square(9));`)}
-<div class="note"><b>💡 Parametr vs argument</b><b>Parametr</b> — yaratishda <code class="inline">(name)</code>. <b>Argument</b> — chaqirishda <code class="inline">greet("Anvar")</code>.</div>
+<table>
+  <tr><th>Qism</th><th>Nima</th></tr>
+  <tr><td><code>function</code></td><td>kalit so‘z: «funksiya yarataman»</td></tr>
+  <tr><td><code>greet</code></td><td>funksiya nomi (o‘zing tanlaysan)</td></tr>
+  <tr><td><code>(name)</code></td><td><b>parametr</b> — funksiya kirishda oladigan narsa</td></tr>
+  <tr><td><code>{ ... }</code></td><td><b>tana</b> — funksiya nima qilishi</td></tr>
+</table>
+<p>Mana <b>chaqirish</b> — ish shundan boshlanadi:</p>
+${play(`function greet(name) {\n  console.log("Salom, " + name + "!");\n}\n\n// funksiyani uch marta chaqiramiz\ngreet("Samandar");\ngreet("Anvar");\ngreet("Malika");`)}
+<p>Bitta funksiya — uchta salom! <code class="inline">greet("...")</code> qatorlari — bu <b>chaqiruvlar</b>.</p>
+
+<h2>Parametr va argument — farqi nimada</h2>
+<table>
+  <tr><th>Atama</th><th>Qayerda</th><th>Misol</th></tr>
+  <tr><td><b>Parametr</b></td><td>funksiyani <b>yaratishda</b></td><td><code>function greet(name)</code> — <code>name</code> parametr (bo‘sh «katak»)</td></tr>
+  <tr><td><b>Argument</b></td><td>funksiyani <b>chaqirishda</b></td><td><code>greet("Anvar")</code> — <code>"Anvar"</code> argument (haqiqiy qiymat)</td></tr>
+</table>
+<div class="note"><b>💡 Oddiy tilda</b><b>Parametr</b> — funksiya kutayotgan nomli bo‘sh quti. <b>Argument</b> — chaqirishda o‘sha qutiga soladigan narsang.</div>
+
+<h2>Bir nechta parametr</h2>
+${play(`function greetFull(name, age) {\n  console.log("Ismim " + name + ", yoshim " + age);\n}\n\ngreetFull("Aziz", 20);\ngreetFull("Dilnoza", 17);`)}
+<p>Tartib muhim: birinchi argument birinchi parametrga tushadi.</p>
+
+<h2>Natijani <b>qaytaradigan</b> funksiya — <code class="inline">return</code></h2>
+<p>Ko‘pincha funksiya biror narsani <b>hisoblab</b>, natijani <b>qaytarishi</b> kerak — keyin uni saqlab, ishlatamiz. Buning uchun <code class="inline">return</code> bor.</p>
+${play(`function add(a, b) {\n  return a + b;   // natijani tashqariga qaytaramiz\n}\n\nlet result = add(5, 3);   // natijani o‘zgaruvchiga olamiz\nconsole.log("5 + 3 =", result);\nconsole.log("10 + 20 =", add(10, 20));`)}
+<h3>🔍 Bu yerda nima bo‘lyapti:</h3>
+<ol>
+  <li><code class="inline">add(5, 3)</code> chaqiriladi. Ichida: <code class="inline">a = 5</code>, <code class="inline">b = 3</code>.</li>
+  <li><code class="inline">return 5 + 3</code> → funksiya <code class="inline">8</code> ni tashqariga «beradi».</li>
+  <li>Bu <code class="inline">8</code> <code class="inline">result</code> o‘zgaruvchiga tushadi.</li>
+</ol>
+<div class="warn"><b>⚠ Muhim farq</b><code class="inline">console.log</code> shunchaki matnni <b>ko‘rsatadi</b>. <code class="inline">return</code> esa <b>qiymatni qaytaradi</b> — uni saqlab, keyin ishlatish mumkin. Bular har xil!</div>
+<div class="tip"><b>return haqida yana</b>Kompyuter <code class="inline">return</code> ga yetishi bilan funksiya <b>darrov tugaydi</b> — undan keyingi kod ishlamaydi.</div>
+
+<h2>Funksiya + shart birga</h2>
+${play(`function canEnter(age) {\n  if (age >= 18) {\n    return "O‘ting ✅";\n  } else {\n    return "Faqat 18+ ❌";\n  }\n}\n\nconsole.log(canEnter(25));\nconsole.log(canEnter(15));`)}
+
+<h2>Zamonaviy qisqa yozuv — strelka funksiyalari</h2>
+<pre>${C}// oddiy funksiya${_}
+${K}function${_} ${F}add${_}(a, b) { ${K}return${_} a + b; }
+
+${C}// xuddi shu — strelka funksiyasi${_}
+${K}const${_} ${F}add${_} = (a, b) ${K}=>${_} a + b;</pre>
+${play(`const square = (x) => x * x;\n\nconsole.log("5 kvadrati =", square(5));\nconsole.log("9 kvadrati =", square(9));`)}
+
 <div class="quiz" data-quiz>
   <h3>✅ Mini-test</h3>
   <div class="q" data-q data-answer="2"><div class="qtext">1. <code class="inline">return</code> nima qiladi?</div>
-    <label class="opt"><input type="radio" name="q1"> Matn chiqaradi</label>
-    <label class="opt"><input type="radio" name="q1"> O‘zgaruvchi yaratadi</label>
-    <label class="opt"><input type="radio" name="q1"> Natijani qaytaradi</label></div>
-  <div class="q" data-q data-answer="1"><div class="qtext">2. <code class="inline">greet</code> ni «Lola» bilan qanday chaqiramiz?</div>
+    <label class="opt"><input type="radio" name="q1"> Ekranga matn chiqaradi</label>
+    <label class="opt"><input type="radio" name="q1"> Yangi o‘zgaruvchi yaratadi</label>
+    <label class="opt"><input type="radio" name="q1"> Funksiyadan qiymatni tashqariga qaytaradi</label></div>
+  <div class="q" data-q data-answer="1"><div class="qtext">2. <code class="inline">greet</code> ni «Lola» bilan qanday <b>chaqiramiz</b>?</div>
     <label class="opt"><input type="radio" name="q2"> greet = "Lola"</label>
     <label class="opt"><input type="radio" name="q2"> greet("Lola")</label>
     <label class="opt"><input type="radio" name="q2"> function greet("Lola")</label></div>
+  <div class="q" data-q data-answer="0"><div class="qtext">3. <code class="inline">greetFull("Aziz", 20)</code> da «Aziz» nima?</div>
+    <label class="opt"><input type="radio" name="q3"> Argument (chaqirishdagi qiymat)</label>
+    <label class="opt"><input type="radio" name="q3"> Parametr</label>
+    <label class="opt"><input type="radio" name="q3"> Funksiya nomi</label></div>
   <button class="quiz-btn" data-check>Javoblarni tekshir</button>
   <div class="quiz-result" data-result></div>
 </div>`
